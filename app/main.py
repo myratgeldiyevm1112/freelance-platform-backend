@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from app.core.config import settings
 from app.core.logging import setup_logging, logger
 from app.infrastructure.database.session import engine
+from app.api.v1.routers.auth import router as auth_router
 
 setup_logging()
 
@@ -29,3 +30,5 @@ async def shutdown():
 async def health_check():
     logger.info("Health check called")
     return {"status": "ok", "env": settings.APP_ENV}
+
+app.include_router(auth_router, prefix="/api/v1")
