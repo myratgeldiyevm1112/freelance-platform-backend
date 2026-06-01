@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app.core.config import settings
 from app.core.logging import setup_logging, logger
+from app.infrastructure.database.session import engine
 
 setup_logging()
 
@@ -15,6 +16,13 @@ app = FastAPI(
 @app.on_event("startup")
 async def startup():
     logger.info(f"Starting app in {settings.APP_ENV} mode")
+    logger.info("Database engine created")
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await engine.dispose()
+    logger.info("Database engine disposed")
 
 
 @app.get("/health")
