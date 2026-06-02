@@ -49,3 +49,15 @@ class UserRepository(IUserRepository):
     async def get_hashed_password(self, email: str) -> str | None:
         result = await self.session.execute(select(User.hashed_password).where(User.email == email))
         return result.scalar_one_or_none()
+
+    async def update(self, user_id, data) -> UserEntity:
+        result = await self.session.execute(select(User).where(User.id == user_id))
+        user = result.scalar_one_or_none()
+        if not user:
+            raise ValueError("User not found")
+
+        for field, value in data.model_dump(exclude_none=True).items():
+            setattr(user, field, value)
+
+        await self.session.flush()
+        return self._to_entity(user)

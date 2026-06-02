@@ -4,6 +4,7 @@ from app.core.config import settings
 from app.core.logging import setup_logging, logger
 from app.infrastructure.database.session import engine
 from app.api.v1.routers.auth import router as auth_router
+from app.api.v1.routers.users import router as users_router
 
 setup_logging()
 
@@ -26,6 +27,7 @@ app = FastAPI(
 )
 
 app.include_router(auth_router, prefix="/api/v1")
+app.include_router(users_router, prefix="/api/v1")
 
 
 @app.get("/health")

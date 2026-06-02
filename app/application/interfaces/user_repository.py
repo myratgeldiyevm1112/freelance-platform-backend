@@ -19,3 +19,7 @@ class IUserRepository(ABC):
     @abstractmethod
     async def get_hashed_password(self, email: str) -> str | None:
         raise NotImplementedError
+
+    @abstractmethod
+    async def update(self, user_id, data) -> UserEntity:
+        raise NotImplementedError

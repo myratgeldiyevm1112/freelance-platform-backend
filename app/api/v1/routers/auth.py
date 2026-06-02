@@ -1,18 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.dependencies.db import get_db
-from app.application.dto.auth import RegisterRequest, UserResponse
-from app.application.use_cases.register_user import RegisterUser
-from app.infrastructure.repositories.user_repository import UserRepository
-from app.application.dto.auth import LoginRequest, TokenResponse
+from app.application.dto.auth import RegisterRequest, UserResponse, TokenResponse, LoginRequest
 from app.application.use_cases.login_user import LoginUser
+from app.application.use_cases.register_user import RegisterUser
 from app.application.use_cases.refresh_token import RefreshToken
+from app.infrastructure.repositories.user_repository import UserRepository
 from pydantic import BaseModel
-
-
-class RefreshRequest(BaseModel):
-    refresh_token: str
-
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -27,13 +22,20 @@ async def register(data: RegisterRequest, db: AsyncSession = Depends(get_db)):
 
 
 @router.post("/login", response_model=TokenResponse)
-async def login(data: LoginRequest, db: AsyncSession = Depends(get_db)):
+async def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: AsyncSession = Depends(get_db)
+):
     use_case = LoginUser(UserRepository(db))
     try:
+        data = LoginRequest(email=form_data.username, password=form_data.password)
         return await use_case.execute(data)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
 
+
+class RefreshRequest(BaseModel):
+    refresh_token: str
 
 
 @router.post("/refresh", response_model=TokenResponse)
