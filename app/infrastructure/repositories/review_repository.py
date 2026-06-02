@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.domain.entities.review import ReviewEntity
 from app.infrastructure.database.models.review import Review
@@ -46,3 +46,16 @@ class ReviewRepository:
             select(Review).where(Review.reviewee_id == reviewee_id)
         )
         return [self._to_entity(r) for r in result.scalars().all()]
+
+    async def get_average_rating(self, reviewee_id: uuid.UUID) -> dict:
+        result = await self.session.execute(
+            select(
+                func.avg(Review.rating).label("average"),
+                func.count(Review.id).label("total"),
+            ).where(Review.reviewee_id == reviewee_id)
+        )
+        row = result.one()
+        return {
+            "average_rating": round(float(row.average), 2) if row.average else 0.0,
+            "total_reviews": row.total,
+        }

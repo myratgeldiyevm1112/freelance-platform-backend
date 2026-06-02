@@ -34,3 +34,13 @@ async def get_user_reviews(
     repo = ReviewRepository(db)
     reviews = await repo.get_by_reviewee_id(user_id)
     return [ReviewResponse.model_validate(r) for r in reviews]
+
+
+@router.get("/user/{user_id}/rating")
+async def get_user_rating(
+    user_id: UUID,
+    current_user: UserEntity = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    repo = ReviewRepository(db)
+    return await repo.get_average_rating(user_id)
