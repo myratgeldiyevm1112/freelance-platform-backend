@@ -8,6 +8,7 @@ from app.api.v1.routers.users import router as users_router
 from app.api.v1.routers.jobs import router as jobs_router
 from app.api.v1.routers.proposals import router as proposals_router
 from app.api.v1.routers.contracts import router as contracts_router
+from app.api.v1.routers.reviews import router as reviews_router
 
 setup_logging()
 
@@ -43,6 +44,7 @@ app.include_router(users_router, prefix="/api/v1")
 app.include_router(jobs_router, prefix="/api/v1")
 app.include_router(proposals_router, prefix="/api/v1")
 app.include_router(contracts_router, prefix="/api/v1")
+app.include_router(reviews_router, prefix="/api/v1")
 
 
 @app.get("/health")
