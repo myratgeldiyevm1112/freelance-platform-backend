@@ -1,3 +1,4 @@
+import uuid
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.dependencies.auth import get_current_user
@@ -6,6 +7,7 @@ from app.application.dto.job import CreateJobRequest, JobResponse
 from app.application.use_cases.create_job import CreateJob
 from app.domain.entities.user import UserEntity
 from app.infrastructure.repositories.job_repository import JobRepository
+from app.application.use_cases.get_jobs import GetJobs
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
 
@@ -21,3 +23,25 @@ async def create_job(
         return await use_case.execute(data, current_user)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
+
+
+@router.get("/", response_model=list[JobResponse])
+async def get_jobs(
+    skip: int = 0,
+    limit: int = 20,
+    db: AsyncSession = Depends(get_db),
+):
+    use_case = GetJobs(JobRepository(db))
+    return await use_case.execute(skip=skip, limit=limit)
+
+
+@router.get("/{job_id}", response_model=JobResponse)
+async def get_job(
+    job_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+):
+    use_case = GetJobs(JobRepository(db))
+    job = await use_case.execute_one(job_id)
+    if not job:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
+    return job
