@@ -1,16 +1,17 @@
 import uuid
+from typing import Union
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.dependencies.auth import get_current_user
 from app.api.dependencies.db import get_db
-from app.application.dto.proposal import SubmitProposalRequest, ProposalResponse, UpdateProposalStatusRequest
+from app.application.dto.proposal import SubmitProposalRequest, ProposalResponse, UpdateProposalStatusRequest, AcceptProposalResponse
 from app.application.use_cases.submit_proposal import SubmitProposal
 from app.domain.entities.user import UserEntity
 from app.infrastructure.repositories.job_repository import JobRepository
 from app.infrastructure.repositories.proposal_repository import ProposalRepository
 from app.application.use_cases.get_proposals import GetProposals
 from app.application.use_cases.update_proposal_status import UpdateProposalStatus
-from app.infrastructure.repositories.contract_repository import ContractRepository
+from app.infrastructure.repositories.contract_repository import ContractRepository 
 
 
 router = APIRouter(prefix="/proposals", tags=["proposals"])
@@ -44,7 +45,7 @@ async def get_proposals(
 
 
 
-@router.patch("/{proposal_id}", response_model=ProposalResponse)
+@router.patch("/{proposal_id}", response_model=Union[AcceptProposalResponse, ProposalResponse])
 async def update_proposal_status(
     proposal_id: uuid.UUID,
     data: UpdateProposalStatusRequest,

@@ -1,5 +1,5 @@
 import uuid
-from app.application.dto.proposal import ProposalResponse
+from app.application.dto.proposal import ProposalResponse, AcceptProposalResponse
 from app.application.interfaces.proposal_repository import IProposalRepository
 from app.application.interfaces.job_repository import IJobRepository
 from app.domain.entities.contract import ContractEntity
@@ -26,7 +26,7 @@ class UpdateProposalStatus:
         proposal_id: uuid.UUID,
         new_status: ProposalStatus,
         current_user: UserEntity,
-    ) -> ProposalResponse:
+    ) -> ProposalResponse | AcceptProposalResponse:
         if current_user.role != UserRole.CLIENT:
             raise ValueError("Only clients can accept or reject proposals")
 
@@ -47,7 +47,7 @@ class UpdateProposalStatus:
         updated = await self.proposal_repo.update_status(proposal_id, new_status)
 
         if new_status == ProposalStatus.ACCEPTED:
-            await self.contract_repo.create(
+            contract = await self.contract_repo.create(
                 ContractEntity(
                     id=uuid.uuid4(),
                     job_id=proposal.job_id,
@@ -58,6 +58,10 @@ class UpdateProposalStatus:
                     status=None,
                     created_at=None,
                 )
+            )
+            return AcceptProposalResponse(
+                proposal=ProposalResponse.model_validate(updated),
+                contract_id=contract.id,
             )
 
         return ProposalResponse.model_validate(updated)

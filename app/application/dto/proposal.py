@@ -23,3 +23,9 @@ class ProposalResponse(BaseModel):
 
 class UpdateProposalStatusRequest(BaseModel):
     status: ProposalStatus
+
+
+class AcceptProposalResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    proposal: ProposalResponse
+    contract_id: uuid.UUID
