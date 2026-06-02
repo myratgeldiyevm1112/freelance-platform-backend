@@ -73,7 +73,7 @@ async def test_complete_contract(client):
 
     job = await client.post(
         "/api/v1/jobs/",
-        json={"title": "Test Job", "description": "desc", "budget": 500},
+        json={"title": "Test Job", "description": "Test description", "budget": 500},
         headers={"authorization": f"Bearer {client_token}"}
     )
     job_id = job.json()["id"]
@@ -104,7 +104,7 @@ async def test_complete_contract_wrong_user(client):
 
     job = await client.post(
         "/api/v1/jobs/",
-        json={"title": "Test Job", "description": "desc", "budget": 500},
+        json={"title": "Test Job", "description": "Test description", "budget": 500},
         headers={"authorization": f"Bearer {client_token}"}
     )
     job_id = job.json()["id"]
@@ -135,7 +135,7 @@ async def test_leave_review_success(client):
 
     job = await client.post(
         "/api/v1/jobs/",
-        json={"title": "Test Job", "description": "desc", "budget": 500},
+        json={"title": "Test Job", "description": "Test description", "budget": 500},
         headers={"authorization": f"Bearer {client_token}"}
     )
     job_id = job.json()["id"]
