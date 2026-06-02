@@ -6,6 +6,7 @@ from app.infrastructure.database.session import engine
 from app.api.v1.routers.auth import router as auth_router
 from app.api.v1.routers.users import router as users_router
 from app.api.v1.routers.jobs import router as jobs_router
+from app.api.v1.routers.proposals import router as proposals_router
 
 setup_logging()
 
@@ -25,11 +26,21 @@ app = FastAPI(
     version="0.1.0",
     debug=settings.DEBUG,
     lifespan=lifespan,
+    swagger_ui_init_oauth={},
+    components={
+        "securitySchemes": {
+            "BearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+            }
+        }
+    },
 )
 
 app.include_router(auth_router, prefix="/api/v1")
 app.include_router(users_router, prefix="/api/v1")
 app.include_router(jobs_router, prefix="/api/v1")
+app.include_router(proposals_router, prefix="/api/v1")
 
 
 @app.get("/health")

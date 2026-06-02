@@ -1,0 +1,26 @@
+import uuid
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.api.dependencies.auth import get_current_user
+from app.api.dependencies.db import get_db
+from app.application.dto.proposal import SubmitProposalRequest, ProposalResponse
+from app.application.use_cases.submit_proposal import SubmitProposal
+from app.domain.entities.user import UserEntity
+from app.infrastructure.repositories.job_repository import JobRepository
+from app.infrastructure.repositories.proposal_repository import ProposalRepository
+
+router = APIRouter(prefix="/proposals", tags=["proposals"])
+
+
+@router.post("/jobs/{job_id}/proposals", response_model=ProposalResponse, status_code=status.HTTP_201_CREATED)
+async def submit_proposal(
+    job_id: uuid.UUID,
+    data: SubmitProposalRequest,
+    current_user: UserEntity = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    use_case = SubmitProposal(ProposalRepository(db), JobRepository(db))
+    try:
+        return await use_case.execute(job_id, data, current_user)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
