@@ -45,3 +45,7 @@ class UserRepository(IUserRepository):
         result = await self.session.execute(select(User).where(User.id == user_id))
         user = result.scalar_one_or_none()
         return self._to_entity(user) if user else None
+
+    async def get_hashed_password(self, email: str) -> str | None:
+        result = await self.session.execute(select(User.hashed_password).where(User.email == email))
+        return result.scalar_one_or_none()
