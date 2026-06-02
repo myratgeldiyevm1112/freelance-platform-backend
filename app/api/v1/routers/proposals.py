@@ -10,6 +10,7 @@ from app.infrastructure.repositories.job_repository import JobRepository
 from app.infrastructure.repositories.proposal_repository import ProposalRepository
 from app.application.use_cases.get_proposals import GetProposals
 from app.application.use_cases.update_proposal_status import UpdateProposalStatus
+from app.infrastructure.repositories.contract_repository import ContractRepository
 
 
 router = APIRouter(prefix="/proposals", tags=["proposals"])
@@ -50,7 +51,11 @@ async def update_proposal_status(
     current_user: UserEntity = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    use_case = UpdateProposalStatus(ProposalRepository(db), JobRepository(db))
+    use_case = UpdateProposalStatus(
+        ProposalRepository(db),
+        JobRepository(db),
+        ContractRepository(db),
+    )
     try:
         return await use_case.execute(proposal_id, data.status, current_user)
     except ValueError as e:

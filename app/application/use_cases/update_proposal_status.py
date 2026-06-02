@@ -2,9 +2,11 @@ import uuid
 from app.application.dto.proposal import ProposalResponse
 from app.application.interfaces.proposal_repository import IProposalRepository
 from app.application.interfaces.job_repository import IJobRepository
+from app.domain.entities.contract import ContractEntity
 from app.domain.entities.user import UserEntity
 from app.infrastructure.database.models.proposal import ProposalStatus
 from app.infrastructure.database.models.user import UserRole
+from app.infrastructure.repositories.contract_repository import ContractRepository
 
 
 class UpdateProposalStatus:
@@ -13,9 +15,11 @@ class UpdateProposalStatus:
         self,
         proposal_repo: IProposalRepository,
         job_repo: IJobRepository,
+        contract_repo: ContractRepository,
     ):
         self.proposal_repo = proposal_repo
         self.job_repo = job_repo
+        self.contract_repo = contract_repo
 
     async def execute(
         self,
@@ -41,4 +45,19 @@ class UpdateProposalStatus:
             raise ValueError("You do not own this job")
 
         updated = await self.proposal_repo.update_status(proposal_id, new_status)
+
+        if new_status == ProposalStatus.ACCEPTED:
+            await self.contract_repo.create(
+                ContractEntity(
+                    id=uuid.uuid4(),
+                    job_id=proposal.job_id,
+                    proposal_id=proposal_id,
+                    client_id=job.client_id,
+                    freelancer_id=proposal.freelancer_id,
+                    agreed_rate=proposal.proposed_rate,
+                    status=None,
+                    created_at=None,
+                )
+            )
+
         return ProposalResponse.model_validate(updated)
