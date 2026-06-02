@@ -13,5 +13,12 @@ class IJobRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_all(self, skip: int, limit: int) -> list[JobEntity]:
+    async def get_all(
+        self,
+        skip: int,
+        limit: int,
+        status: str | None = None,
+        min_budget: float | None = None,
+        max_budget: float | None = None,
+    ) -> list[JobEntity]:
         raise NotImplementedError

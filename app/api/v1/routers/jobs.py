@@ -8,6 +8,7 @@ from app.application.use_cases.create_job import CreateJob
 from app.domain.entities.user import UserEntity
 from app.infrastructure.repositories.job_repository import JobRepository
 from app.application.use_cases.get_jobs import GetJobs
+from app.infrastructure.database.models.job import JobStatus
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
 
@@ -29,10 +30,19 @@ async def create_job(
 async def get_jobs(
     skip: int = 0,
     limit: int = 20,
+    status: JobStatus | None = None,
+    min_budget: float | None = None,
+    max_budget: float | None = None,
     db: AsyncSession = Depends(get_db),
 ):
     use_case = GetJobs(JobRepository(db))
-    return await use_case.execute(skip=skip, limit=limit)
+    return await use_case.execute(
+        skip=skip,
+        limit=limit,
+        status=status,
+        min_budget=min_budget,
+        max_budget=max_budget,
+    )
 
 
 @router.get("/{job_id}", response_model=JobResponse)

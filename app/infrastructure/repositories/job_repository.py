@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import select
+from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.application.interfaces.job_repository import IJobRepository
 from app.domain.entities.job import JobEntity
@@ -41,6 +41,27 @@ class JobRepository(IJobRepository):
         job = result.scalar_one_or_none()
         return self._to_entity(job) if job else None
 
-    async def get_all(self, skip: int = 0, limit: int = 20) -> list[JobEntity]:
-        result = await self.session.execute(select(Job).offset(skip).limit(limit))
+
+    async def get_all(
+        self,
+        skip: int = 0,
+        limit: int = 20,
+        status: str | None = None,
+        min_budget: float | None = None,
+        max_budget: float | None = None,
+    ) -> list[JobEntity]:
+        query = select(Job)
+        filters = []
+
+        if status:
+            filters.append(Job.status == status)
+        if min_budget is not None:
+            filters.append(Job.budget >= min_budget)
+        if max_budget is not None:
+            filters.append(Job.budget <= max_budget)
+        if filters:
+            query = query.where(and_(*filters))
+
+        query = query.offset(skip).limit(limit)
+        result = await self.session.execute(query)
         return [self._to_entity(j) for j in result.scalars().all()]
