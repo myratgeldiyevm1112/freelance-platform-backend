@@ -33,6 +33,7 @@ async def get_jobs(
     status: JobStatus | None = None,
     min_budget: float | None = None,
     max_budget: float | None = None,
+    current_user: UserEntity = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     use_case = GetJobs(JobRepository(db))
@@ -48,6 +49,7 @@ async def get_jobs(
 @router.get("/{job_id}", response_model=JobResponse)
 async def get_job(
     job_id: uuid.UUID,
+    current_user: UserEntity = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     use_case = GetJobs(JobRepository(db))
