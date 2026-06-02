@@ -114,7 +114,8 @@ async def test_accept_proposal_creates_contract(client):
         headers={"authorization": f"Bearer {client_token}"}
     )
     assert response.status_code == 200
-    assert response.json()["status"] == "accepted"
+    assert response.json()["proposal"]["status"] == "accepted"
+    assert "contract_id" in response.json()
 
 
 @pytest.mark.asyncio
