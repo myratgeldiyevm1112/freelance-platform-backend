@@ -5,7 +5,7 @@ from datetime import datetime
 class LeaveReviewRequest(BaseModel):
     contract_id: uuid.UUID
     rating: int = Field(..., ge=1, le=5)
-    comment: str | None = None
+    comment: str | None = Field(None, max_length=1000)
 
 class ReviewResponse(BaseModel):
     id: uuid.UUID

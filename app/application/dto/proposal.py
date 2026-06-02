@@ -1,13 +1,13 @@
 import uuid
 from datetime import datetime
 from decimal import Decimal
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from app.infrastructure.database.models.proposal import ProposalStatus
 
 
 class SubmitProposalRequest(BaseModel):
-    cover_letter: str
-    proposed_rate: Decimal
+    cover_letter: str = Field(..., min_length=10, max_length=2000)
+    proposed_rate: Decimal = Field(..., gt=0)
 
 
 class ProposalResponse(BaseModel):
