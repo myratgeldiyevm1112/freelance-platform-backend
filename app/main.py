@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.core.config import settings
 from app.core.logging import setup_logging, logger
@@ -6,29 +7,28 @@ from app.api.v1.routers.auth import router as auth_router
 
 setup_logging()
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info(f"Starting app in {settings.APP_ENV} mode")
+    logger.info("Database engine created")
+    yield
+    await engine.dispose()
+    logger.info("Database engine disposed")
+
+
 app = FastAPI(
     title="Freelance Platform API",
     description="A clean freelance marketplace REST API",
     version="0.1.0",
     debug=settings.DEBUG,
+    lifespan=lifespan,
 )
 
-
-@app.on_event("startup")
-async def startup():
-    logger.info(f"Starting app in {settings.APP_ENV} mode")
-    logger.info("Database engine created")
-
-
-@app.on_event("shutdown")
-async def shutdown():
-    await engine.dispose()
-    logger.info("Database engine disposed")
+app.include_router(auth_router, prefix="/api/v1")
 
 
 @app.get("/health")
 async def health_check():
     logger.info("Health check called")
     return {"status": "ok", "env": settings.APP_ENV}
-
-app.include_router(auth_router, prefix="/api/v1")
