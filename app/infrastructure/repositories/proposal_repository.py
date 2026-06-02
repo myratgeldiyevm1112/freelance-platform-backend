@@ -72,4 +72,5 @@ class ProposalRepository(IProposalRepository):
             raise ValueError("Proposal not found")
         proposal.status = status
         await self.session.flush()
+        await self.session.refresh(proposal)  # <- добавить эту строку
         return self._to_entity(proposal)

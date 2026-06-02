@@ -20,3 +20,6 @@ class ProposalResponse(BaseModel):
     proposed_rate: Decimal
     status: ProposalStatus
     created_at: datetime
+
+class UpdateProposalStatusRequest(BaseModel):
+    status: ProposalStatus
