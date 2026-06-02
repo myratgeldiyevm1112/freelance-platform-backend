@@ -24,3 +24,7 @@ class GetJobs:
             max_budget=max_budget,
         )
         return [JobResponse.model_validate(j) for j in jobs]
+    
+    async def execute_one(self, job_id: uuid.UUID) -> JobResponse | None:
+        job = await self.job_repo.get_by_id(job_id)
+        return JobResponse.model_validate(job) if job else None

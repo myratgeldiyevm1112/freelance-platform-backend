@@ -34,6 +34,7 @@ pytest==9.0.3
 pytest-asyncio==1.4.0
 python-dotenv==1.2.2
 python-jose==3.5.0
+python-multipart==0.0.30
 PyYAML==6.0.3
 redis==8.0.0
 rsa==4.9.1

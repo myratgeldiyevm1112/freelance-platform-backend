@@ -22,13 +22,9 @@ async def register(data: RegisterRequest, db: AsyncSession = Depends(get_db)):
 
 
 @router.post("/login", response_model=TokenResponse)
-async def login(
-    form_data: OAuth2PasswordRequestForm = Depends(),
-    db: AsyncSession = Depends(get_db)
-):
+async def login(data: LoginRequest, db: AsyncSession = Depends(get_db)):
     use_case = LoginUser(UserRepository(db))
     try:
-        data = LoginRequest(email=form_data.username, password=form_data.password)
         return await use_case.execute(data)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
