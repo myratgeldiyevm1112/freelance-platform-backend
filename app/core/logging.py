@@ -9,6 +9,7 @@ def setup_logging() -> None:
         datefmt="%Y-%m-%d %H:%M:%S",
         handlers=[logging.StreamHandler(sys.stdout)],
     )
+    logging.getLogger("python_multipart").setLevel(logging.WARNING)
 
 
 logger = logging.getLogger("freelance_platform")

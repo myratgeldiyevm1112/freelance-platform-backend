@@ -2,7 +2,7 @@ import uuid
 from decimal import Decimal
 from pydantic import BaseModel, ConfigDict
 from app.infrastructure.database.models.job import JobStatus
-
+from datetime import datetime
 
 class CreateJobRequest(BaseModel):
     title: str
@@ -19,3 +19,4 @@ class JobResponse(BaseModel):
     description: str
     budget: Decimal
     status: JobStatus
+    created_at: datetime
