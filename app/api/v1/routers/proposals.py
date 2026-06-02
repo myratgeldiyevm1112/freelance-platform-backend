@@ -8,6 +8,7 @@ from app.application.use_cases.submit_proposal import SubmitProposal
 from app.domain.entities.user import UserEntity
 from app.infrastructure.repositories.job_repository import JobRepository
 from app.infrastructure.repositories.proposal_repository import ProposalRepository
+from app.application.use_cases.get_proposals import GetProposals
 
 router = APIRouter(prefix="/proposals", tags=["proposals"])
 
@@ -24,3 +25,16 @@ async def submit_proposal(
         return await use_case.execute(job_id, data, current_user)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+
+@router.get("/jobs/{job_id}/proposals", response_model=list[ProposalResponse])
+async def get_proposals(
+    job_id: uuid.UUID,
+    current_user: UserEntity = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    use_case = GetProposals(ProposalRepository(db))
+    try:
+        return await use_case.execute_by_job(job_id, current_user)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
