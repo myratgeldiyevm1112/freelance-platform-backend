@@ -48,7 +48,7 @@ async def test_get_jobs(client):
         json={"title": "Job 1", "description": "Desc 1", "budget": 500},
         headers={"authorization": f"Bearer {token}"}
     )
-    response = await client.get("/api/v1/jobs/")
+    response = await client.get("/api/v1/jobs/", headers={"authorization": f"Bearer {token}"})
     assert response.status_code == 200
     assert len(response.json()) >= 1
 
@@ -61,7 +61,7 @@ async def test_get_jobs_filter_by_status(client):
         json={"title": "Job 1", "description": "Desc 1", "budget": 500},
         headers={"authorization": f"Bearer {token}"}
     )
-    response = await client.get("/api/v1/jobs/?status=open")
+    response = await client.get("/api/v1/jobs/?status=open", headers={"authorization": f"Bearer {token}"})
     assert response.status_code == 200
     for job in response.json():
         assert job["status"] == "open"
@@ -76,12 +76,16 @@ async def test_get_job_by_id(client):
         headers={"authorization": f"Bearer {token}"}
     )
     job_id = created.json()["id"]
-    response = await client.get(f"/api/v1/jobs/{job_id}")
+    response = await client.get(f"/api/v1/jobs/{job_id}", headers={"authorization": f"Bearer {token}"})
     assert response.status_code == 200
     assert response.json()["id"] == job_id
 
 
 @pytest.mark.asyncio
 async def test_get_job_not_found(client):
-    response = await client.get("/api/v1/jobs/00000000-0000-0000-0000-000000000000")
+    token = await register_and_login(client, "client@test.com", "client")
+    response = await client.get(
+        "/api/v1/jobs/00000000-0000-0000-0000-000000000000",
+        headers={"authorization": f"Bearer {token}"}
+    )
     assert response.status_code == 404
