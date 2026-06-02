@@ -44,3 +44,15 @@ class ContractRepository:
         )
         contract = result.scalar_one_or_none()
         return self._to_entity(contract) if contract else None
+
+    async def update_status(self, contract_id: uuid.UUID, new_status: ContractStatus) -> ContractEntity | None:
+        result = await self.session.execute(
+            select(Contract).where(Contract.id == contract_id)
+        )
+        contract = result.scalar_one_or_none()
+        if not contract:
+            return None
+        contract.status = new_status
+        await self.session.flush()
+        await self.session.refresh(contract)
+        return self._to_entity(contract)

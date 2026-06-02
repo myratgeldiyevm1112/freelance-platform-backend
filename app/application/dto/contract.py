@@ -16,3 +16,7 @@ class ContractResponse(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class UpdateContractStatusRequest(BaseModel):
+    new_status: ContractStatus
