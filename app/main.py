@@ -38,6 +38,8 @@ Use the **Authorize** button with your `Bearer <token>` to access protected endp
     """,
     version="1.0.0",
     debug=settings.DEBUG,
+    docs_url="/docs" if not settings.is_production else None,
+    redoc_url="/redoc" if not settings.is_production else None,
     lifespan=lifespan,
     contact={
         "name": "Muhammet Myratgeldiyev",

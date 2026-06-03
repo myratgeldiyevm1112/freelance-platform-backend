@@ -7,13 +7,25 @@ class Settings(BaseSettings):
 
     APP_ENV: str = "development"
     DEBUG: bool = True
+
     DATABASE_URL: str
+
     REDIS_URL: str = "redis://localhost:6379"
+
     SECRET_KEY: str
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+
     ALLOWED_ORIGINS: list[str] = ["http://localhost:3000"]
+
+    @property
+    def is_production(self) -> bool:
+        return self.APP_ENV == "production"
+
+    @property
+    def is_development(self) -> bool:
+        return self.APP_ENV == "development"
 
 
 settings = Settings()
