@@ -191,7 +191,7 @@ GET    /api/v1/reviews/user/{user_id}
 Built by **Muhammet Myratgeldiyev** as a portfolio project.
 
 - GitHub: [@myratgeldiyevm1112](https://github.com/myratgeldiyevm1112)
-- LinkedIn: [yourprofile](https://linkedin.com/in/yourprofile)
+- LinkedIn: [Muhammet Myratgeldiyev](www.linkedin.com/in/muhammet-myratgeldiyev-aa8736413)
 
 ---
 
