@@ -1,6 +1,7 @@
+# app/api/v1/routers/proposals.py
 import uuid
 from typing import Union
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.dependencies.auth import get_current_user
 from app.api.dependencies.db import get_db
@@ -11,11 +12,9 @@ from app.infrastructure.repositories.job_repository import JobRepository
 from app.infrastructure.repositories.proposal_repository import ProposalRepository
 from app.application.use_cases.get_proposals import GetProposals
 from app.application.use_cases.update_proposal_status import UpdateProposalStatus
-from app.infrastructure.repositories.contract_repository import ContractRepository 
-
+from app.infrastructure.repositories.contract_repository import ContractRepository
 
 router = APIRouter(prefix="/proposals", tags=["proposals"])
-
 
 @router.post("/jobs/{job_id}/proposals", response_model=ProposalResponse, status_code=status.HTTP_201_CREATED)
 async def submit_proposal(
@@ -25,10 +24,7 @@ async def submit_proposal(
     db: AsyncSession = Depends(get_db),
 ):
     use_case = SubmitProposal(ProposalRepository(db), JobRepository(db))
-    try:
-        return await use_case.execute(job_id, data, current_user)
-    except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    return await use_case.execute(job_id, data, current_user)
 
 
 @router.get("/jobs/{job_id}/proposals", response_model=list[ProposalResponse])
@@ -38,11 +34,7 @@ async def get_proposals(
     db: AsyncSession = Depends(get_db),
 ):
     use_case = GetProposals(ProposalRepository(db))
-    try:
-        return await use_case.execute_by_job(job_id, current_user)
-    except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
-
+    return await use_case.execute_by_job(job_id, current_user)
 
 
 @router.patch("/{proposal_id}", response_model=Union[AcceptProposalResponse, ProposalResponse])
@@ -57,7 +49,4 @@ async def update_proposal_status(
         JobRepository(db),
         ContractRepository(db),
     )
-    try:
-        return await use_case.execute(proposal_id, data.status, current_user)
-    except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    return await use_case.execute(proposal_id, data.status, current_user)

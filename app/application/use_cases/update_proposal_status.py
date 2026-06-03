@@ -7,6 +7,7 @@ from app.domain.entities.user import UserEntity
 from app.infrastructure.database.models.proposal import ProposalStatus
 from app.infrastructure.database.models.user import UserRole
 from app.infrastructure.repositories.contract_repository import ContractRepository
+from app.domain.exceptions import ForbiddenError, NotFoundError, ValidationError
 
 
 class UpdateProposalStatus:
@@ -28,21 +29,21 @@ class UpdateProposalStatus:
         current_user: UserEntity,
     ) -> ProposalResponse | AcceptProposalResponse:
         if current_user.role != UserRole.CLIENT:
-            raise ValueError("Only clients can accept or reject proposals")
+            raise ForbiddenError("Only clients can accept or reject proposals")
 
         proposal = await self.proposal_repo.get_by_id(proposal_id)
         if not proposal:
-            raise ValueError("Proposal not found")
+            raise NotFoundError("Proposal not found")
 
         if proposal.status != ProposalStatus.PENDING:
-            raise ValueError("Proposal is no longer pending")
+            raise ValidationError("Proposal is no longer pending")
 
         job = await self.job_repo.get_by_id(proposal.job_id)
         if not job:
-            raise ValueError("Job not found")
+            raise NotFoundError("Job not found")
 
         if job.client_id != current_user.id:
-            raise ValueError("You do not own this job")
+            raise ForbiddenError("You do not own this job")
 
         updated = await self.proposal_repo.update_status(proposal_id, new_status)
 

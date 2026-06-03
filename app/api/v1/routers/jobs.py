@@ -20,10 +20,7 @@ async def create_job(
     db: AsyncSession = Depends(get_db),
 ):
     use_case = CreateJob(JobRepository(db))
-    try:
-        return await use_case.execute(data, current_user)
-    except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
+    return await use_case.execute(data, current_user)
 
 
 @router.get("/", response_model=list[JobResponse])
@@ -53,7 +50,4 @@ async def get_job(
     db: AsyncSession = Depends(get_db),
 ):
     use_case = GetJobs(JobRepository(db))
-    job = await use_case.execute_one(job_id)
-    if not job:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
-    return job
+    return await use_case.execute_one(job_id)

@@ -1,6 +1,7 @@
 import uuid
 from app.application.dto.job import JobResponse
 from app.application.interfaces.job_repository import IJobRepository
+from app.domain.exceptions import NotFoundError
 
 
 class GetJobs:
@@ -27,4 +28,6 @@ class GetJobs:
     
     async def execute_one(self, job_id: uuid.UUID) -> JobResponse | None:
         job = await self.job_repo.get_by_id(job_id)
-        return JobResponse.model_validate(job) if job else None
+        if not job:
+            raise NotFoundError("Job not found")
+        return JobResponse.model_validate(job)

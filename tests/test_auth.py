@@ -26,7 +26,7 @@ async def test_register_duplicate_email(client):
     }
     await client.post("/api/v1/auth/register", json=payload)
     response = await client.post("/api/v1/auth/register", json=payload)
-    assert response.status_code == 400
+    assert response.status_code == 409
     assert "already registered" in response.json()["detail"]
 
 

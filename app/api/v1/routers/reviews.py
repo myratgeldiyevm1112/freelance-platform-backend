@@ -20,10 +20,7 @@ async def leave_review(
     review_repo = ReviewRepository(db)
     contract_repo = ContractRepository(db)
     use_case = LeaveReview(review_repo, contract_repo)
-    try:
-        return await use_case.execute(data, current_user)
-    except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    return await use_case.execute(data, current_user)
 
 @router.get("/user/{user_id}", response_model=list[ReviewResponse])
 async def get_user_reviews(

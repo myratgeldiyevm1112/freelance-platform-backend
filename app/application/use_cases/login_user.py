@@ -1,6 +1,7 @@
 from app.application.dto.auth import LoginRequest, TokenResponse
 from app.application.interfaces.user_repository import IUserRepository
 from app.core.security import verify_password, create_access_token, create_refresh_token
+from app.domain.exceptions import ValidationError, ForbiddenError, UnauthorizedError
 
 
 class LoginUser:
@@ -11,14 +12,14 @@ class LoginUser:
     async def execute(self, data: LoginRequest) -> TokenResponse:
         user = await self.user_repo.get_by_email(data.email)
         if not user:
-            raise ValueError("Invalid email or password")
+            raise ValidationError("Invalid email or password")
 
         if not user.is_active:
-            raise ValueError("User is inactive")
+            raise ForbiddenError("User is inactive")
 
         hashed = await self.user_repo.get_hashed_password(data.email)
         if not verify_password(data.password, hashed):
-            raise ValueError("Invalid email or password")
+            raise UnauthorizedError("Invalid email or password")
 
         payload = {"sub": str(user.id), "role": user.role}
 

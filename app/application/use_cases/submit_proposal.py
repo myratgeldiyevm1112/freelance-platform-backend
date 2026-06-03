@@ -6,6 +6,7 @@ from app.domain.entities.proposal import ProposalEntity
 from app.domain.entities.user import UserEntity
 from app.infrastructure.database.models.job import JobStatus
 from app.infrastructure.database.models.user import UserRole
+from app.domain.exceptions import ForbiddenError, NotFoundError, ValidationError, ConflictError
 
 
 class SubmitProposal:
@@ -22,20 +23,20 @@ class SubmitProposal:
         self, job_id: uuid.UUID, data: SubmitProposalRequest, current_user: UserEntity
     ) -> ProposalResponse:
         if current_user.role != UserRole.FREELANCER:
-            raise ValueError("Only freelancers can submit proposals")
+            raise ForbiddenError("Only freelancers can submit proposals")
 
         job = await self.job_repo.get_by_id(job_id)
         if not job:
-            raise ValueError("Job not found")
+            raise NotFoundError("Job not found")
 
         if job.status != JobStatus.OPEN:
-            raise ValueError("Job is not open for proposals")
+            raise ValidationError("Job is not open for proposals")
 
         existing = await self.proposal_repo.get_by_freelancer_and_job(
             current_user.id, job_id
         )
         if existing:
-            raise ValueError("You already submitted a proposal for this job")
+            raise ConflictError("You already submitted a proposal for this job")
 
         entity = ProposalEntity(
             id=uuid.uuid4(),

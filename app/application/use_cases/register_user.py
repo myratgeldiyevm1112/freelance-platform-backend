@@ -3,6 +3,7 @@ from app.application.dto.auth import RegisterRequest, UserResponse
 from app.application.interfaces.user_repository import IUserRepository
 from app.core.security import hash_password
 from app.domain.entities.user import UserEntity
+from app.domain.exceptions import ConflictError
 
 
 class RegisterUser:
@@ -12,8 +13,9 @@ class RegisterUser:
 
     async def execute(self, data: RegisterRequest) -> UserResponse:
         existing = await self.user_repo.get_by_email(data.email)
+        
         if existing:
-            raise ValueError("Email already registered")
+            raise ConflictError("Email already registered")
 
         entity = UserEntity(
             id=uuid.uuid4(),

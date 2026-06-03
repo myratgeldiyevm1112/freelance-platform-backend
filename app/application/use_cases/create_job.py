@@ -4,6 +4,7 @@ from app.application.interfaces.job_repository import IJobRepository
 from app.domain.entities.job import JobEntity
 from app.domain.entities.user import UserEntity
 from app.infrastructure.database.models.user import UserRole
+from app.domain.exceptions import ForbiddenError
 
 
 class CreateJob:
@@ -13,7 +14,7 @@ class CreateJob:
 
     async def execute(self, data: CreateJobRequest, current_user: UserEntity) -> JobResponse:
         if current_user.role != UserRole.CLIENT:
-            raise ValueError("Only clients can create jobs")
+            raise ForbiddenError("Only clients can create jobs")
 
         entity = JobEntity(
             id=uuid.uuid4(),

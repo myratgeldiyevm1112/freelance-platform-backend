@@ -5,6 +5,7 @@ from app.application.interfaces.contract_repository import IContractRepository
 from app.domain.entities.review import ReviewEntity
 from app.domain.entities.user import UserEntity
 from app.infrastructure.database.models.contract import ContractStatus
+from app.domain.exceptions import NotFoundError, ValidationError, ForbiddenError, ConflictError
 
 class LeaveReview:
 
@@ -15,17 +16,17 @@ class LeaveReview:
     async def execute(self, data: LeaveReviewRequest, current_user: UserEntity) -> ReviewResponse:
         contract = await self.contract_repo.get_by_id(data.contract_id)
         if not contract:
-            raise ValueError("Contract not found")
+            raise NotFoundError("Contract not found")
 
         if contract.status != ContractStatus.COMPLETED:
-            raise ValueError("Can only review completed contracts")
+            raise ValidationError("Can only review completed contracts")
 
         if current_user.id not in (contract.client_id, contract.freelancer_id):
-            raise ValueError("You are not part of this contract")
+            raise ForbiddenError("You are not part of this contract")
 
         existing = await self.review_repo.get_by_contract_id(data.contract_id)
         if existing:
-            raise ValueError("Review already exists for this contract")
+            raise ConflictError("Review already exists for this contract")
 
         reviewee_id = (
             contract.freelancer_id

@@ -1,6 +1,7 @@
 from app.application.dto.auth import TokenResponse
 from app.application.interfaces.user_repository import IUserRepository
 from app.core.security import decode_token, create_access_token, create_refresh_token
+from app.domain.exceptions import ValidationError, NotFoundError, ForbiddenError
 
 
 class RefreshToken:
@@ -12,18 +13,18 @@ class RefreshToken:
         try:
             payload = decode_token(refresh_token)
         except ValueError:
-            raise ValueError("Invalid refresh token")
+            raise ValidationError("Invalid refresh token")
 
         if payload.get("type") != "refresh":
-            raise ValueError("Invalid token type")
+            raise ValidationError("Invalid token type")
 
         user_id = payload.get("sub")
         user = await self.user_repo.get_by_id(user_id)
         if not user:
-            raise ValueError("User not found")
+            raise NotFoundError("User not found")
 
         if not user.is_active:
-            raise ValueError("User is inactive")
+            raise ForbiddenError("User is inactive")
 
         new_payload = {"sub": str(user.id), "role": user.role}
 

@@ -54,7 +54,7 @@ async def test_submit_proposal_as_client_forbidden(client):
     job_id = await create_job(client, client_token)
 
     response = await submit_proposal(client, client_token, job_id)
-    assert response.status_code == 400
+    assert response.status_code == 403
 
 
 @pytest.mark.asyncio
@@ -65,7 +65,7 @@ async def test_submit_duplicate_proposal(client):
 
     await submit_proposal(client, freelancer_token, job_id)
     response = await submit_proposal(client, freelancer_token, job_id)
-    assert response.status_code == 400
+    assert response.status_code == 409
 
 
 # --- List proposals ---
@@ -148,7 +148,7 @@ async def test_accept_proposal_as_freelancer_forbidden(client):
         json={"status": "accepted"},
         headers={"authorization": f"Bearer {freelancer_token}"}
     )
-    assert response.status_code == 400
+    assert response.status_code == 403
 
 
 @pytest.mark.asyncio
