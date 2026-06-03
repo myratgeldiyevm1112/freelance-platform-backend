@@ -14,9 +14,10 @@ from app.application.use_cases.get_proposals import GetProposals
 from app.application.use_cases.update_proposal_status import UpdateProposalStatus
 from app.infrastructure.repositories.contract_repository import ContractRepository
 
-router = APIRouter(prefix="/proposals", tags=["proposals"])
+router = APIRouter(prefix="/proposals", tags=["Proposals"])
 
-@router.post("/jobs/{job_id}/proposals", response_model=ProposalResponse, status_code=status.HTTP_201_CREATED)
+
+@router.post("/jobs/{job_id}/proposals", summary="Submit proposal", description="Only freelancers can submit proposals.", response_model=ProposalResponse, status_code=status.HTTP_201_CREATED)
 async def submit_proposal(
     job_id: uuid.UUID,
     data: SubmitProposalRequest,
@@ -27,7 +28,7 @@ async def submit_proposal(
     return await use_case.execute(job_id, data, current_user)
 
 
-@router.get("/jobs/{job_id}/proposals", response_model=list[ProposalResponse])
+@router.get("/jobs/{job_id}/proposals", summary="List proposals", description="Only clients can view proposals for their jobs.", response_model=list[ProposalResponse])
 async def get_proposals(
     job_id: uuid.UUID,
     current_user: UserEntity = Depends(get_current_user),
@@ -37,7 +38,7 @@ async def get_proposals(
     return await use_case.execute_by_job(job_id, current_user)
 
 
-@router.patch("/{proposal_id}", response_model=Union[AcceptProposalResponse, ProposalResponse])
+@router.patch("/{proposal_id}", summary="Accept or reject proposal", description="Only clients can accept or reject proposals.", response_model=Union[AcceptProposalResponse, ProposalResponse])
 async def update_proposal_status(
     proposal_id: uuid.UUID,
     data: UpdateProposalStatusRequest,

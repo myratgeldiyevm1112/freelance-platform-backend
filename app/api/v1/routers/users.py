@@ -8,15 +8,15 @@ from app.application.use_cases.update_profile import UpdateProfile
 from app.domain.entities.user import UserEntity
 from app.infrastructure.repositories.user_repository import UserRepository
 
-router = APIRouter(prefix="/users", tags=["users"])
+router = APIRouter(prefix="/users", tags=["Users"])
 
 
-@router.get("/me", response_model=UserResponse)
+@router.get("/me", summary="Get my profile", response_model=UserResponse)
 async def get_me(current_user: UserEntity = Depends(get_current_user)):
     return UserResponse.model_validate(current_user)
 
 
-@router.patch("/me", response_model=UserResponse)
+@router.patch("/me", summary="Update my profile", response_model=UserResponse)
 async def update_me(
     data: UpdateProfileRequest,
     current_user: UserEntity = Depends(get_current_user),

@@ -13,7 +13,10 @@ from app.infrastructure.repositories.contract_repository import ContractReposito
 router = APIRouter(prefix="/contracts", tags=["Contracts"])
 
 
-@router.get("/{contract_id}", response_model=ContractResponse)
+
+router = APIRouter(prefix="/contracts", tags=["Contracts"])
+
+@router.get("/{contract_id}", summary="Get contract", response_model=ContractResponse)
 async def get_contract(
     contract_id: UUID,
     current_user: UserEntity = Depends(get_current_user),
@@ -23,7 +26,7 @@ async def get_contract(
     return await use_case.execute(contract_id)
 
 
-@router.patch("/{contract_id}/status", response_model=ContractResponse)
+@router.patch("/{contract_id}/status", summary="Update contract status", description="Change contract status to completed or cancelled.", response_model=ContractResponse)
 async def update_contract_status(
     contract_id: UUID,
     data: UpdateContractStatusRequest,

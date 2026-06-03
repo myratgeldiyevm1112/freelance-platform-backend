@@ -12,10 +12,10 @@ from app.infrastructure.database.models.job import JobStatus
 from app.application.dto.pagination import PaginationParams, PaginatedResponse
 from fastapi import Query
 
-router = APIRouter(prefix="/jobs", tags=["jobs"])
+router = APIRouter(prefix="/jobs", tags=["Jobs"])
 
 
-@router.post("/", response_model=JobResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/", summary="Create a job", description="Only clients can create jobs.", response_model=JobResponse, status_code=status.HTTP_201_CREATED)
 async def create_job(
     data: CreateJobRequest,
     current_user: UserEntity = Depends(get_current_user),
@@ -25,7 +25,7 @@ async def create_job(
     return await use_case.execute(data, current_user)
 
 
-@router.get("/", response_model=PaginatedResponse[JobResponse])
+@router.get("/", summary="List jobs", description="Browse jobs with filters and pagination.", response_model=PaginatedResponse[JobResponse])
 async def get_jobs(
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
@@ -44,7 +44,7 @@ async def get_jobs(
         max_budget=max_budget,
     )
 
-@router.get("/{job_id}", response_model=JobResponse)
+@router.get("/{job_id}", summary="Get job by ID", response_model=JobResponse)
 async def get_job(
     job_id: uuid.UUID,
     current_user: UserEntity = Depends(get_current_user),

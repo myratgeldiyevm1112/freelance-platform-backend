@@ -11,7 +11,9 @@ from app.infrastructure.repositories.contract_repository import ContractReposito
 
 router = APIRouter(prefix="/reviews", tags=["Reviews"])
 
-@router.post("/", response_model=ReviewResponse, status_code=status.HTTP_201_CREATED)
+
+
+@router.post("/", summary="Leave a review", description="Leave a review after contract completion.", response_model=ReviewResponse, status_code=status.HTTP_201_CREATED)
 async def leave_review(
     data: LeaveReviewRequest,
     current_user: UserEntity = Depends(get_current_user),
@@ -22,7 +24,7 @@ async def leave_review(
     use_case = LeaveReview(review_repo, contract_repo)
     return await use_case.execute(data, current_user)
 
-@router.get("/user/{user_id}", response_model=list[ReviewResponse])
+@router.get("/user/{user_id}", summary="Get user reviews", response_model=list[ReviewResponse])
 async def get_user_reviews(
     user_id: UUID,
     current_user: UserEntity = Depends(get_current_user),
@@ -33,7 +35,7 @@ async def get_user_reviews(
     return [ReviewResponse.model_validate(r) for r in reviews]
 
 
-@router.get("/user/{user_id}/rating")
+@router.get("/user/{user_id}/rating", summary="Get user rating", description="Get average rating and total reviews for a user.")
 async def get_user_rating(
     user_id: UUID,
     current_user: UserEntity = Depends(get_current_user),
