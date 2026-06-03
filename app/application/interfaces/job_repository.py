@@ -22,3 +22,12 @@ class IJobRepository(ABC):
         max_budget: float | None = None,
     ) -> list[JobEntity]:
         raise NotImplementedError
+
+    @abstractmethod
+    async def count(
+        self,
+        status: str | None = None,
+        min_budget: float | None = None,
+        max_budget: float | None = None,
+    ) -> int:
+        raise NotImplementedError

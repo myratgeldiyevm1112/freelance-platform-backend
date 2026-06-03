@@ -63,7 +63,7 @@ async def test_get_jobs_filter_by_status(client):
     )
     response = await client.get("/api/v1/jobs/?status=open", headers={"authorization": f"Bearer {token}"})
     assert response.status_code == 200
-    for job in response.json():
+    for job in response.json()["items"]:
         assert job["status"] == "open"
 
 

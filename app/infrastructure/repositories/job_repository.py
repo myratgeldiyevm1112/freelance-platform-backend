@@ -65,3 +65,22 @@ class JobRepository(IJobRepository):
         query = query.offset(skip).limit(limit)
         result = await self.session.execute(query)
         return [self._to_entity(j) for j in result.scalars().all()]
+    async def count(
+        self,
+        status: str | None = None,
+        min_budget: float | None = None,
+        max_budget: float | None = None,
+    ) -> int:
+        from sqlalchemy import func
+        query = select(func.count(Job.id))
+        filters = []
+        if status:
+            filters.append(Job.status == status)
+        if min_budget is not None:
+            filters.append(Job.budget >= min_budget)
+        if max_budget is not None:
+            filters.append(Job.budget <= max_budget)
+        if filters:
+            query = query.where(and_(*filters))
+        result = await self.session.execute(query)
+        return result.scalar_one()
