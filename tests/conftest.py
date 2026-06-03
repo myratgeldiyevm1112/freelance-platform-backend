@@ -1,7 +1,9 @@
+# conftest.py
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy import text
 from app.main import app
 from app.api.dependencies.db import get_db
 from app.infrastructure.database.base import Base
@@ -16,8 +18,6 @@ async def engine():
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
     yield _engine
-    async with _engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
     await _engine.dispose()
 
 @pytest_asyncio.fixture(scope="function")
