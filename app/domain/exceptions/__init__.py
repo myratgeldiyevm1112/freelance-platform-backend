@@ -1,3 +1,4 @@
+
 class AppError(Exception):
     """Base exception"""
     def __init__(self, message: str):
@@ -10,7 +11,7 @@ class NotFoundError(AppError):
 class ForbiddenError(AppError):
     pass
 
-class ConflictError(AppError):
+class ConflictError(AppError): 
     pass
 
 class ValidationError(AppError):

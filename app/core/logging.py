@@ -1,15 +1,20 @@
 import logging
 import sys
-
+from app.core.config import settings
 
 def setup_logging() -> None:
+    level = logging.DEBUG if settings.DEBUG else logging.INFO
+
     logging.basicConfig(
-        level=logging.DEBUG,
+        level=level,
         format="%(asctime)s | %(levelname)-8s | %(name)s - %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
         handlers=[logging.StreamHandler(sys.stdout)],
     )
-    logging.getLogger("python_multipart").setLevel(logging.WARNING)
 
+    logging.getLogger("python_multipart").setLevel(logging.WARNING)
+    logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
 
 logger = logging.getLogger("freelance_platform")

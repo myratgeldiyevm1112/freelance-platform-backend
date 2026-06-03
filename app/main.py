@@ -5,6 +5,8 @@ from app.core.logging import setup_logging, logger
 from app.infrastructure.database.session import engine
 from app.api.v1.router import api_router
 from app.core.exception_handlers import register_exception_handlers
+from app.core.middleware import logging_middleware
+from starlette.middleware.base import BaseHTTPMiddleware
 
 setup_logging()
 
@@ -36,6 +38,7 @@ app = FastAPI(
 )
 
 register_exception_handlers(app)
+app.add_middleware(BaseHTTPMiddleware, dispatch=logging_middleware)
 
 app.include_router(api_router)
 
