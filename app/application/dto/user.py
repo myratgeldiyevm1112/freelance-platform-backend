@@ -1,5 +1,4 @@
-from pydantic import BaseModel, ConfigDict, Field, field_validator
-from app.infrastructure.database.models.user import UserRole
+from pydantic import BaseModel, Field, field_validator
 
 
 class UpdateProfileRequest(BaseModel):

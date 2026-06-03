@@ -40,6 +40,7 @@ python-multipart==0.0.30
 PyYAML==6.0.3
 redis==8.0.0
 rsa==4.9.1
+ruff==0.15.15
 six==1.17.0
 SQLAlchemy==2.0.50
 starlette==1.2.1

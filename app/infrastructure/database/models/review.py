@@ -1,6 +1,5 @@
-import enum
 import uuid
-from sqlalchemy import Integer, Text, Enum, ForeignKey, CheckConstraint
+from sqlalchemy import Integer, Text, ForeignKey, CheckConstraint
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 from app.infrastructure.database.base import BaseModel

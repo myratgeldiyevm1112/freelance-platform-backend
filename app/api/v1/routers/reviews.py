@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.dependencies.auth import get_current_user
