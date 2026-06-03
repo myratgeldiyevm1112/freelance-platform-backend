@@ -5,10 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from app.main import app
 from app.api.dependencies.db import get_db
 from app.infrastructure.database.base import Base
-from app.infrastructure.database.models import User  # noqa
+from app.infrastructure.database.models import User, Job, Proposal, Contract, Review  # noqa
 
-TEST_DATABASE_URL = "postgresql+asyncpg://postgres:password@localhost:5433/freelance_db"
-
+TEST_DATABASE_URL = "postgresql+asyncpg://postgres:password@localhost:5433/freelance_test_db"
 
 @pytest_asyncio.fixture(scope="function")
 async def engine():
@@ -21,13 +20,11 @@ async def engine():
         await conn.run_sync(Base.metadata.drop_all)
     await _engine.dispose()
 
-
 @pytest_asyncio.fixture(scope="function")
 async def db_session(engine):
     session_maker = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
     async with session_maker() as session:
         yield session
-
 
 @pytest_asyncio.fixture(scope="function")
 async def client(db_session):
