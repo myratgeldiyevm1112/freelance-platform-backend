@@ -74,6 +74,8 @@ Built as a portfolio project demonstrating:
 
 ## 🏗️ Architecture
 
+![Architecture](./architecture.svg)
+
 This project follows **Clean Architecture** principles:
 
 ```
