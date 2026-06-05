@@ -38,3 +38,24 @@ class UploadAvatarResponse(BaseModel):
 
 class UploadPortfolioResponse(BaseModel):
     portfolio_urls: list[str]
+
+
+class AddSkillsRequest(BaseModel):
+    skills: list[str] = Field(..., min_length=1, max_items=20)
+
+    @field_validator("skills")
+    @classmethod
+    def normalize_skills(cls, v):
+        return [s.lower().strip() for s in v if s.strip()]
+
+
+class SkillResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID
+    skill_id: uuid.UUID
+    skill_name: str
+
+
+class UserSkillsResponse(BaseModel):
+    skills: list[SkillResponse]
