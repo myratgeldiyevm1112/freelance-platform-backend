@@ -25,7 +25,7 @@ async def websocket_endpoint(
 
     if str(payload.get("sub")) != str(user_id):
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
-        logger.warning(f"WS rejected: token sub != path user_id")
+        logger.warning("WS rejected: token sub != path user_id")
         return
 
     await manager.connect(user_id, websocket)

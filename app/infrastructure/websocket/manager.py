@@ -1,4 +1,3 @@
-import uuid
 from fastapi import WebSocket
 from app.core.logging import logger
 
