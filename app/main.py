@@ -8,6 +8,7 @@ from app.api.v1.router import api_router
 from app.core.exception_handlers import register_exception_handlers
 from app.core.middleware import logging_middleware
 from starlette.middleware.base import BaseHTTPMiddleware
+from app.infrastructure.cache.redis_client import get_redis_client, close_redis_client
 
 setup_logging()
 
@@ -15,9 +16,13 @@ setup_logging()
 async def lifespan(app: FastAPI):
     logger.info(f"Starting app in {settings.APP_ENV} mode")
     logger.info("Database engine created")
+    await get_redis_client()
+    logger.info("Redis client initialized")
     yield
     await engine.dispose()
     logger.info("Database engine disposed")
+    await close_redis_client()
+    logger.info("Redis client closed")
 
 app = FastAPI(
     title="Freelance Platform API",
