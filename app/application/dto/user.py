@@ -1,4 +1,7 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+import uuid
+from datetime import datetime
+from app.infrastructure.database.models.user import UserRole
 
 
 class UpdateProfileRequest(BaseModel):
@@ -12,3 +15,26 @@ class UpdateProfileRequest(BaseModel):
         if v is not None and not v.strip():
             raise ValueError("Full name cannot be empty")
         return v.strip() if v else v
+
+
+class UserResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID
+    email: str
+    full_name: str
+    role: UserRole
+    is_active: bool
+    bio: str | None = None
+    hourly_rate: float | None = None
+    avatar_url: str | None = None
+    portfolio_urls: list | None = None
+    created_at: datetime
+
+
+class UploadAvatarResponse(BaseModel):
+    avatar_url: str
+
+
+class UploadPortfolioResponse(BaseModel):
+    portfolio_urls: list[str]

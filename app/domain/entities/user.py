@@ -14,3 +14,5 @@ class UserEntity:
     created_at: datetime
     bio: str | None = None
     hourly_rate: float | None = None
+    avatar_url: str | None = None
+    portfolio_urls: list | None = None
