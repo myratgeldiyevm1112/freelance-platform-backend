@@ -7,23 +7,26 @@ from app.core.logging import logger
 
 class S3Service:
     def __init__(self):
-        self.client = boto3.client(
-            "s3",
-            endpoint_url=settings.S3_ENDPOINT_URL,
-            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-            region_name=settings.AWS_REGION,
-        )
+        self._client = None
         self.bucket = settings.S3_BUCKET
-        self._ensure_bucket()
+
+    @property
+    def client(self):
+        if self._client is None:
+            self._client = boto3.client(
+                "s3",
+                endpoint_url=settings.S3_ENDPOINT_URL,
+                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                region_name=settings.AWS_REGION,
+            )
+        return self._client
 
     def _ensure_bucket(self):
-        """Создаёт bucket если не существует."""
         try:
             self.client.head_bucket(Bucket=self.bucket)
         except ClientError:
             self.client.create_bucket(Bucket=self.bucket)
-            # Делаем bucket публичным для чтения
             self.client.put_bucket_policy(
                 Bucket=self.bucket,
                 Policy=f'''{{
@@ -39,7 +42,7 @@ class S3Service:
             logger.info(f"S3 bucket '{self.bucket}' created")
 
     def upload_file(self, file_bytes: bytes, filename: str, content_type: str) -> str:
-        """Загружает файл и возвращает публичный URL."""
+        self._ensure_bucket()
         key = f"{uuid.uuid4()}_{filename}"
         self.client.put_object(
             Bucket=self.bucket,
@@ -52,7 +55,6 @@ class S3Service:
         return url
 
     def delete_file(self, url: str):
-        """Удаляет файл по URL."""
         try:
             key = url.split(f"{self.bucket}/")[-1]
             self.client.delete_object(Bucket=self.bucket, Key=key)
