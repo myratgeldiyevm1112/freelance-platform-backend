@@ -1,7 +1,7 @@
-import enum
-from sqlalchemy import String, Text, Numeric, Enum
+from sqlalchemy import String, Text, Numeric, Enum, JSON
 from sqlalchemy.orm import Mapped, mapped_column
 from app.infrastructure.database.base import BaseModel
+import enum
 
 
 class UserRole(str, enum.Enum):
@@ -19,3 +19,5 @@ class User(BaseModel):
     bio: Mapped[str | None] = mapped_column(Text, nullable=True)
     hourly_rate: Mapped[float | None] = mapped_column(Numeric(10, 2), nullable=True)
     is_active: Mapped[bool] = mapped_column(default=True)
+    avatar_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    portfolio_urls: Mapped[list | None] = mapped_column(JSON, nullable=True)
