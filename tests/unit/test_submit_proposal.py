@@ -49,11 +49,13 @@ async def test_submit_proposal_success():
 
     proposal_repo = AsyncMock()
     job_repo = AsyncMock()
+    user_repo = AsyncMock()
     job_repo.get_by_id.return_value = job
     proposal_repo.get_by_freelancer_and_job.return_value = None
     proposal_repo.create.return_value = proposal
+    user_repo.get_by_id.return_value = make_client()
 
-    use_case = SubmitProposal(proposal_repo, job_repo)
+    use_case = SubmitProposal(proposal_repo, job_repo, user_repo)
     result = await use_case.execute(
         job.id,
         SubmitProposalRequest(cover_letter="I can do this job well", proposed_rate=100),
@@ -69,8 +71,9 @@ async def test_submit_proposal_client_forbidden():
     client = make_client()
     proposal_repo = AsyncMock()
     job_repo = AsyncMock()
+    user_repo = AsyncMock()
 
-    use_case = SubmitProposal(proposal_repo, job_repo)
+    use_case = SubmitProposal(proposal_repo, job_repo, user_repo)
 
     with pytest.raises(ForbiddenError):
         await use_case.execute(
@@ -85,9 +88,10 @@ async def test_submit_proposal_job_not_found():
     freelancer = make_freelancer()
     proposal_repo = AsyncMock()
     job_repo = AsyncMock()
+    user_repo = AsyncMock()
     job_repo.get_by_id.return_value = None
 
-    use_case = SubmitProposal(proposal_repo, job_repo)
+    use_case = SubmitProposal(proposal_repo, job_repo, user_repo)
 
     with pytest.raises(NotFoundError):
         await use_case.execute(
@@ -103,9 +107,10 @@ async def test_submit_proposal_job_not_open():
     job = make_job(status=JobStatus.CLOSED)
     proposal_repo = AsyncMock()
     job_repo = AsyncMock()
+    user_repo = AsyncMock()
     job_repo.get_by_id.return_value = job
 
-    use_case = SubmitProposal(proposal_repo, job_repo)
+    use_case = SubmitProposal(proposal_repo, job_repo, user_repo)
 
     with pytest.raises(ValidationError):
         await use_case.execute(
@@ -123,10 +128,11 @@ async def test_submit_proposal_duplicate():
 
     proposal_repo = AsyncMock()
     job_repo = AsyncMock()
+    user_repo = AsyncMock()
     job_repo.get_by_id.return_value = job
     proposal_repo.get_by_freelancer_and_job.return_value = existing
 
-    use_case = SubmitProposal(proposal_repo, job_repo)
+    use_case = SubmitProposal(proposal_repo, job_repo, user_repo)
 
     with pytest.raises(ConflictError):
         await use_case.execute(

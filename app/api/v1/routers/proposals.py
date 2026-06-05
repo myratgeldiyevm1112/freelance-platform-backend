@@ -10,6 +10,7 @@ from app.application.use_cases.submit_proposal import SubmitProposal
 from app.domain.entities.user import UserEntity
 from app.infrastructure.repositories.job_repository import JobRepository
 from app.infrastructure.repositories.proposal_repository import ProposalRepository
+from app.infrastructure.repositories.user_repository import UserRepository
 from app.application.use_cases.get_proposals import GetProposals
 from app.application.use_cases.update_proposal_status import UpdateProposalStatus
 from app.infrastructure.repositories.contract_repository import ContractRepository
@@ -24,7 +25,7 @@ async def submit_proposal(
     current_user: UserEntity = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    use_case = SubmitProposal(ProposalRepository(db), JobRepository(db))
+    use_case = SubmitProposal(ProposalRepository(db), JobRepository(db), UserRepository(db))
     return await use_case.execute(job_id, data, current_user)
 
 
@@ -49,5 +50,6 @@ async def update_proposal_status(
         ProposalRepository(db),
         JobRepository(db),
         ContractRepository(db),
+        UserRepository(db),
     )
     return await use_case.execute(proposal_id, data.status, current_user)

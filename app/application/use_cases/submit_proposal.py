@@ -2,6 +2,7 @@ import uuid
 from app.application.dto.proposal import SubmitProposalRequest, ProposalResponse
 from app.application.interfaces.proposal_repository import IProposalRepository
 from app.application.interfaces.job_repository import IJobRepository
+from app.application.interfaces.user_repository import IUserRepository
 from app.domain.entities.proposal import ProposalEntity
 from app.domain.entities.user import UserEntity
 from app.infrastructure.database.models.job import JobStatus
@@ -15,9 +16,11 @@ class SubmitProposal:
         self,
         proposal_repo: IProposalRepository,
         job_repo: IJobRepository,
+        user_repo: IUserRepository,
     ):
         self.proposal_repo = proposal_repo
         self.job_repo = job_repo
+        self.user_repo = user_repo
 
     async def execute(
         self, job_id: uuid.UUID, data: SubmitProposalRequest, current_user: UserEntity
@@ -49,4 +52,14 @@ class SubmitProposal:
         )
 
         created = await self.proposal_repo.create(entity)
+
+        client = await self.user_repo.get_by_id(job.client_id)
+        if client:
+            from app.infrastructure.tasks.notifications import send_proposal_notification
+            send_proposal_notification.delay(
+                job_title=job.title,
+                client_email=client.email,
+                freelancer_name=current_user.full_name,
+            )
+
         return ProposalResponse.model_validate(created)

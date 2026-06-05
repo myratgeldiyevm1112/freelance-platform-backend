@@ -2,6 +2,7 @@ import uuid
 from app.application.dto.proposal import ProposalResponse, AcceptProposalResponse
 from app.application.interfaces.proposal_repository import IProposalRepository
 from app.application.interfaces.job_repository import IJobRepository
+from app.application.interfaces.user_repository import IUserRepository
 from app.domain.entities.contract import ContractEntity
 from app.domain.entities.user import UserEntity
 from app.infrastructure.database.models.proposal import ProposalStatus
@@ -17,10 +18,12 @@ class UpdateProposalStatus:
         proposal_repo: IProposalRepository,
         job_repo: IJobRepository,
         contract_repo: ContractRepository,
+        user_repo: IUserRepository,
     ):
         self.proposal_repo = proposal_repo
         self.job_repo = job_repo
         self.contract_repo = contract_repo
+        self.user_repo = user_repo
 
     async def execute(
         self,
@@ -60,6 +63,16 @@ class UpdateProposalStatus:
                     created_at=None,
                 )
             )
+
+            freelancer = await self.user_repo.get_by_id(proposal.freelancer_id)
+            if freelancer:
+                from app.infrastructure.tasks.notifications import send_contract_notification
+                send_contract_notification.delay(
+                    job_title=job.title,
+                    freelancer_email=freelancer.email,
+                    client_name=current_user.full_name,
+                )
+
             return AcceptProposalResponse(
                 proposal=ProposalResponse.model_validate(updated),
                 contract_id=contract.id,
