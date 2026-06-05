@@ -26,7 +26,7 @@ async def leave_review(
     contract_repo = ContractRepository(db)
     use_case = LeaveReview(review_repo, contract_repo)
     result = await use_case.execute(data, current_user)
-    await RatingCache(redis).invalidate(data.reviewee_id)
+    await RatingCache(redis).invalidate(result.reviewee_id)
     return result
 
 
