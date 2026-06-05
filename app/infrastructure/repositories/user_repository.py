@@ -7,7 +7,6 @@ from app.infrastructure.database.models.user import User
 
 
 class UserRepository(IUserRepository):
-
     def __init__(self, session: AsyncSession):
         self.session = session
 
@@ -21,6 +20,8 @@ class UserRepository(IUserRepository):
             created_at=model.created_at,
             bio=model.bio,
             hourly_rate=model.hourly_rate,
+            avatar_url=model.avatar_url,
+            portfolio_urls=model.portfolio_urls,
         )
 
     async def create(self, entity: UserEntity, hashed_password: str) -> UserEntity:
@@ -47,7 +48,9 @@ class UserRepository(IUserRepository):
         return self._to_entity(user) if user else None
 
     async def get_hashed_password(self, email: str) -> str | None:
-        result = await self.session.execute(select(User.hashed_password).where(User.email == email))
+        result = await self.session.execute(
+            select(User.hashed_password).where(User.email == email)
+        )
         return result.scalar_one_or_none()
 
     async def update(self, user_id, data) -> UserEntity:
@@ -55,9 +58,21 @@ class UserRepository(IUserRepository):
         user = result.scalar_one_or_none()
         if not user:
             raise ValueError("User not found")
-
         for field, value in data.model_dump(exclude_none=True).items():
             setattr(user, field, value)
-
         await self.session.flush()
         return self._to_entity(user)
+
+    async def update_avatar(self, user_id: uuid.UUID, url: str) -> None:
+        result = await self.session.execute(select(User).where(User.id == user_id))
+        user = result.scalar_one_or_none()
+        if user:
+            user.avatar_url = url
+            await self.session.flush()
+
+    async def update_portfolio(self, user_id: uuid.UUID, urls: list) -> None:
+        result = await self.session.execute(select(User).where(User.id == user_id))
+        user = result.scalar_one_or_none()
+        if user:
+            user.portfolio_urls = urls
+            await self.session.flush()
