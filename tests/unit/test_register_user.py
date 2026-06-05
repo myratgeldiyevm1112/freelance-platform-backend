@@ -1,6 +1,6 @@
 import uuid
 import pytest
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock
 from app.application.use_cases.register_user import RegisterUser
 from app.application.dto.auth import RegisterRequest
 from app.domain.entities.user import UserEntity

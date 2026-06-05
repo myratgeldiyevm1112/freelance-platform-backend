@@ -40,11 +40,6 @@ async def setup_contract(client):
         headers={"authorization": f"Bearer {client_token}"}
     )
 
-    contracts = await client.get(
-        "/api/v1/contracts/by-proposal/" + proposal_id,
-        headers={"authorization": f"Bearer {client_token}"}
-    )
-
     # получаем contract через БД-независимый способ — ищем через proposal
     # но у нас нет такого эндпоинта, поэтому получим через get proposals и найдём contract
     # временное решение: принимаем proposal и берём contract_id из ответа если он там есть
@@ -100,7 +95,7 @@ async def test_complete_contract(client):
 async def test_complete_contract_wrong_user(client):
     client_token = await register_and_login(client, "client@test.com", "client")
     freelancer_token = await register_and_login(client, "freelancer@test.com", "freelancer")
-    other_token = await register_and_login(client, "other@test.com", "client")
+    # other_token = await register_and_login(client, "other@test.com", "client")
 
     job = await client.post(
         "/api/v1/jobs/",
