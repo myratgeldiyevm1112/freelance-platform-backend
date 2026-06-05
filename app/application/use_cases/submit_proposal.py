@@ -8,6 +8,7 @@ from app.domain.entities.user import UserEntity
 from app.infrastructure.database.models.job import JobStatus
 from app.infrastructure.database.models.user import UserRole
 from app.domain.exceptions import ForbiddenError, NotFoundError, ValidationError, ConflictError
+from app.infrastructure.websocket.manager import manager
 
 
 class SubmitProposal:
@@ -61,5 +62,15 @@ class SubmitProposal:
                 client_email=client.email,
                 freelancer_name=current_user.full_name,
             )
-
+            
+            await manager.send_to_user(
+                str(client.id),
+                event="proposal_submitted",
+                data={
+                    "job_id": str(job_id),
+                    "job_title": job.title,
+                    "freelancer_name": current_user.full_name,
+                    "proposal_id": str(created.id),
+                },
+            )
         return ProposalResponse.model_validate(created)

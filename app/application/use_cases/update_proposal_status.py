@@ -67,10 +67,22 @@ class UpdateProposalStatus:
             freelancer = await self.user_repo.get_by_id(proposal.freelancer_id)
             if freelancer:
                 from app.infrastructure.tasks.notifications import send_contract_notification
+                from app.infrastructure.websocket.manager import manager
+
                 send_contract_notification.delay(
                     job_title=job.title,
                     freelancer_email=freelancer.email,
                     client_name=current_user.full_name,
+                )
+                await manager.send_to_user(
+                    str(proposal.freelancer_id),
+                    event="proposal_accepted",
+                    data={
+                        "job_id": str(proposal.job_id),
+                        "job_title": job.title,
+                        "contract_id": str(contract.id),
+                        "client_name": current_user.full_name,
+                    },
                 )
 
             return AcceptProposalResponse(
