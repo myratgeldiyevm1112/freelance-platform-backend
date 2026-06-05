@@ -21,7 +21,6 @@ class JobsCache:
                 min_budget: float | None, max_budget: float | None,
                 value: dict) -> None:
         key = self._key(page, page_size, status, min_budget, max_budget)
-        import json
         from pydantic import RootModel
         serialized = RootModel[dict](value).model_dump_json()
         await self.redis.set(key, serialized, ex=60)
