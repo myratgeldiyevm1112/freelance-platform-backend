@@ -1,5 +1,5 @@
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from app.infrastructure.database.models.job import JobStatus
 
@@ -14,3 +14,4 @@ class JobEntity:
     status: JobStatus
     created_at: datetime
     updated_at: datetime | None = None
+    required_skills: list[str] | None = None
