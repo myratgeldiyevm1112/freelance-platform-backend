@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Request
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.dependencies.db import get_db
+from app.core.limiter import limiter
 from app.api.dependencies.cache import get_redis
 from app.application.dto.auth import RegisterRequest, UserResponse, TokenResponse, LoginRequest
 from app.application.use_cases.login_user import LoginUser
@@ -15,13 +16,16 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-async def register(data: RegisterRequest, db: AsyncSession = Depends(get_db)):
+@limiter.limit("5/minute")
+async def register(request: Request, data: RegisterRequest, db: AsyncSession = Depends(get_db)):
     use_case = RegisterUser(UserRepository(db))
     return await use_case.execute(data)
 
 
 @router.post("/login", response_model=TokenResponse)
+@limiter.limit("10/minute")
 async def login(
+    request: Request,
     data: LoginRequest,
     db: AsyncSession = Depends(get_db),
     redis: Redis = Depends(get_redis),

@@ -3,6 +3,9 @@ from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from app.core.config import settings
 from app.core.logging import setup_logging, logger
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from app.core.limiter import limiter
 from app.infrastructure.database.session import engine
 from app.api.v1.router import api_router
 from app.core.exception_handlers import register_exception_handlers
@@ -54,6 +57,9 @@ Use the **Authorize** button with your `Bearer <token>` to access protected endp
         "name": "MIT",
     },
 )
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 register_exception_handlers(app)
 app.add_middleware(BaseHTTPMiddleware, dispatch=logging_middleware)
