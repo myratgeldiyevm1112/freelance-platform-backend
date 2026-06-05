@@ -23,6 +23,13 @@ class Settings(BaseSettings):
     MAIL_PORT: int = 1025
     MAIL_FROM: str = "noreply@freelance.com"
 
+    # S3 / MinIO
+    AWS_ACCESS_KEY_ID: str = "minioadmin"
+    AWS_SECRET_ACCESS_KEY: str = "minioadmin"
+    AWS_REGION: str = "us-east-1"
+    S3_BUCKET: str = "freelance-platform"
+    S3_ENDPOINT_URL: str = "http://localhost:9000"
+
     @property
     def is_production(self) -> bool:
         return self.APP_ENV == "production"
