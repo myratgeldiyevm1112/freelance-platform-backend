@@ -182,3 +182,25 @@ async def test_fulltext_search_no_results(client):
     )
     assert response.status_code == 200
     assert response.json()["total"] == 0
+
+@pytest.mark.asyncio
+async def test_remove_skill(client):
+    token = await register_and_login(client, "freelancer_del@test.com", "freelancer")
+    add_response = await client.post(
+        "/api/v1/users/me/skills",
+        json={"skills": ["python"]},
+        headers={"authorization": f"Bearer {token}"}
+    )
+    skill_id = add_response.json()["skills"][0]["id"]
+
+    response = await client.delete(
+        f"/api/v1/users/me/skills/{skill_id}",
+        headers={"authorization": f"Bearer {token}"}
+    )
+    assert response.status_code == 204
+
+    get_response = await client.get(
+        "/api/v1/users/me/skills",
+        headers={"authorization": f"Bearer {token}"}
+    )
+    skill_id = add_response.json()["skills"][0]["skill_id"]
