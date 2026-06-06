@@ -35,6 +35,8 @@ async def get_jobs(
     status: JobStatus | None = None,
     min_budget: float | None = None,
     max_budget: float | None = None,
+    skill: str | None = Query(None, description="Filter by skill e.g. python"),
+    q: str | None = Query(None, description="Full-text search in title and description"),
     current_user: UserEntity = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
     redis: Redis = Depends(get_redis),
@@ -46,6 +48,8 @@ async def get_jobs(
         status=status,
         min_budget=min_budget,
         max_budget=max_budget,
+        skill=skill,
+        q=q,
     )
 
 

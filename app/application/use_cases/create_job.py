@@ -26,6 +26,7 @@ class CreateJob:
             budget=data.budget,
             status=None,
             created_at=None,
+            required_skills=data.required_skills,
         )
         created = await self.job_repo.create(entity)
 

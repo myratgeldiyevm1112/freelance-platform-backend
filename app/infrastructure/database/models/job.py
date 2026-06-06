@@ -1,5 +1,5 @@
 from sqlalchemy import String, Text, Numeric, Enum, ForeignKey, Index, JSON
-from sqlalchemy.dialects.postgresql import UUID, TSVECTOR
+from sqlalchemy.dialects.postgresql import UUID, TSVECTOR, JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 from app.infrastructure.database.base import BaseModel
 import enum
@@ -31,5 +31,5 @@ class Job(BaseModel):
     status: Mapped[JobStatus] = mapped_column(
         Enum(JobStatus), nullable=False, default=JobStatus.OPEN
     )
-    required_skills: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    required_skills: Mapped[list | None] = mapped_column(JSONB, nullable=True)
     search_vector: Mapped[str | None] = mapped_column(TSVECTOR, nullable=True)
