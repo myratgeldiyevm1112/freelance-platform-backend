@@ -1,6 +1,5 @@
 import uuid
-from sqlalchemy import select, and_, func, cast
-from sqlalchemy.dialects.postgresql import TSVECTOR
+from sqlalchemy import select, and_, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.application.interfaces.job_repository import IJobRepository
 from app.domain.entities.job import JobEntity

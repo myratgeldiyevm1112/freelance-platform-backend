@@ -1,4 +1,4 @@
-from sqlalchemy import String, Text, Numeric, Enum, ForeignKey, Index, JSON
+from sqlalchemy import String, Text, Numeric, Enum, ForeignKey, Index
 from sqlalchemy.dialects.postgresql import UUID, TSVECTOR, JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 from app.infrastructure.database.base import BaseModel
