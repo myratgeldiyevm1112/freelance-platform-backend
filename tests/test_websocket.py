@@ -1,7 +1,7 @@
 # tests/test_websocket.py
 import pytest
 from unittest.mock import AsyncMock, patch
-from starlette.testclient import TestClient
+from fastapi.testclient import TestClient
 from app.main import app
 from app.api.dependencies.db import get_db
 from app.api.dependencies.cache import get_redis

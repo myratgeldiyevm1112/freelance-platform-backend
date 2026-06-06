@@ -35,18 +35,35 @@ def test_proposal_notification_email_content():
 def test_proposal_notification_logs_error_on_failure():
     """При ошибке таск логирует её."""
     with patch("app.infrastructure.tasks.notifications.asyncio.run", side_effect=Exception("SMTP error")):
-        with patch("app.infrastructure.tasks.notifications.logger") as mock_logger:
-            from app.infrastructure.tasks.notifications import send_proposal_notification
+        with patch("app.infrastructure.tasks.notifications.send_email", new_callable=AsyncMock):
+            with patch("app.infrastructure.tasks.notifications.logger") as mock_logger:
+                from app.infrastructure.tasks.notifications import send_proposal_notification
+                try:
+                    send_proposal_notification(
+                        job_title="Backend Developer",
+                        client_email="client@test.com",
+                        freelancer_name="John Doe",
+                    )
+                except Exception:
+                    pass
+                mock_logger.error.assert_called()
 
-            # apply() запускает таск локально без retry
-            send_proposal_notification.apply(kwargs={
-                "job_title": "Backend Developer",
-                "client_email": "client@test.com",
-                "freelancer_name": "John Doe",
-            })
 
-            mock_logger.error.assert_called()
-
+def test_contract_notification_logs_error_on_failure():
+    """При ошибке таск логирует её."""
+    with patch("app.infrastructure.tasks.notifications.asyncio.run", side_effect=Exception("SMTP error")):
+        with patch("app.infrastructure.tasks.notifications.send_email", new_callable=AsyncMock):
+            with patch("app.infrastructure.tasks.notifications.logger") as mock_logger:
+                from app.infrastructure.tasks.notifications import send_contract_notification
+                try:
+                    send_contract_notification(
+                        job_title="Backend Developer",
+                        freelancer_email="freelancer@test.com",
+                        client_name="Jane Smith",
+                    )
+                except Exception:
+                    pass
+                mock_logger.error.assert_called()
 
 # ──────────────────────────────────────────────
 # send_contract_notification
@@ -64,21 +81,6 @@ def test_contract_notification_success():
         )
 
         mock_run.assert_called_once()
-
-
-def test_contract_notification_logs_error_on_failure():
-    """При ошибке таск логирует её."""
-    with patch("app.infrastructure.tasks.notifications.asyncio.run", side_effect=Exception("SMTP error")):
-        with patch("app.infrastructure.tasks.notifications.logger") as mock_logger:
-            from app.infrastructure.tasks.notifications import send_contract_notification
-
-            send_contract_notification.apply(kwargs={
-                "job_title": "Backend Developer",
-                "freelancer_email": "freelancer@test.com",
-                "client_name": "Jane Smith",
-            })
-
-            mock_logger.error.assert_called()
 
 
 # ──────────────────────────────────────────────

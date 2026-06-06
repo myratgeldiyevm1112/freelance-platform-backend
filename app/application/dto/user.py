@@ -41,7 +41,7 @@ class UploadPortfolioResponse(BaseModel):
 
 
 class AddSkillsRequest(BaseModel):
-    skills: list[str] = Field(..., min_length=1, max_items=20)
+    skills: list[str] = Field(..., min_length=1, max_length=20)
 
     @field_validator("skills")
     @classmethod
