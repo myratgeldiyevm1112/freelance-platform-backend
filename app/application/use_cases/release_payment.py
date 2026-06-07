@@ -3,7 +3,6 @@ from app.application.interfaces.payment_repository import IPaymentRepository
 from app.domain.entities.payment import PaymentEntity
 from app.domain.entities.user import UserEntity
 from app.domain.exceptions import NotFoundError, ForbiddenError, ValidationError
-from app.infrastructure.payment.stripe_service import stripe_service
 
 
 class ReleasePayment:

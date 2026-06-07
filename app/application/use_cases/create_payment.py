@@ -1,7 +1,6 @@
 import uuid
 from app.application.interfaces.payment_repository import IPaymentRepository
 from app.application.interfaces.contract_repository import IContractRepository
-from app.domain.entities.payment import PaymentEntity
 from app.domain.entities.user import UserEntity
 from app.domain.exceptions import NotFoundError, ForbiddenError, ConflictError
 from app.infrastructure.payment.stripe_service import stripe_service

@@ -69,7 +69,7 @@ class MessageRepository(IMessageRepository):
             .where(
                 Message.receiver_id == receiver_id,
                 Message.sender_id == sender_id,
-                Message.is_read == False,
+                not Message.is_read,
             )
         )
         result = await self.db.execute(stmt)
@@ -81,7 +81,7 @@ class MessageRepository(IMessageRepository):
     async def get_unread_count(self, user_id: uuid.UUID) -> int:
         stmt = select(func.count()).where(
             Message.receiver_id == user_id,
-            Message.is_read == False,
+            Message.is_read.is_(False),
         )
         result = await self.db.execute(stmt)
         return result.scalar() or 0
