@@ -199,8 +199,4 @@ async def test_remove_skill(client):
     )
     assert response.status_code == 204
 
-    get_response = await client.get(
-        "/api/v1/users/me/skills",
-        headers={"authorization": f"Bearer {token}"}
-    )
     skill_id = add_response.json()["skills"][0]["skill_id"]
