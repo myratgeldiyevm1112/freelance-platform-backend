@@ -20,9 +20,26 @@ class SendMessage:
             raise ValidationError("Cannot send message to yourself")
         if not content.strip():
             raise ValidationError("Message content cannot be empty")
-        return await self.message_repo.create(
+
+        message = await self.message_repo.create(
             sender_id=current_user.id,
             receiver_id=receiver_id,
             content=content.strip(),
             contract_id=contract_id,
         )
+
+        # Real-time уведомление получателю
+        from app.infrastructure.websocket.manager import manager
+        await manager.send_to_user(
+            str(receiver_id),
+            "new_message",
+            {
+                "message_id": str(message.id),
+                "sender_id": str(current_user.id),
+                "sender_name": current_user.full_name,
+                "content": message.content,
+                "created_at": message.created_at.isoformat(),
+            },
+        )
+
+        return message
