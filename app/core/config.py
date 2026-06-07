@@ -30,9 +30,17 @@ class Settings(BaseSettings):
     S3_BUCKET: str = "freelance-platform"
     S3_ENDPOINT_URL: str = "http://localhost:9000"
 
+    # Stripe
+    STRIPE_SECRET_KEY: str = "sk_test_placeholder"
+    STRIPE_WEBHOOK_SECRET: str = "whsec_placeholder"
+
     @property
     def is_production(self) -> bool:
         return self.APP_ENV == "production"
+
+    # Stripe
+    STRIPE_SECRET_KEY: str = "sk_test_placeholder"
+    STRIPE_WEBHOOK_SECRET: str = "whsec_placeholder"
 
     @property
     def is_development(self) -> bool:
