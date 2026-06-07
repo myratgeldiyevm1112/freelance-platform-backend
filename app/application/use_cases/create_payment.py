@@ -28,7 +28,7 @@ class CreatePayment:
         if existing:
             raise ConflictError("Payment already exists for this contract")
 
-        amount = float(contract.budget)
+        amount = float(contract.agreed_rate)
 
         intent = stripe_service.create_payment_intent(
             amount=amount,
