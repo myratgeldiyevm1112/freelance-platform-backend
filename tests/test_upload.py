@@ -152,3 +152,20 @@ async def test_upload_portfolio_accumulates(client):
     assert url1 in urls
     assert url2 in urls
     assert len(urls) == 2
+
+
+@pytest.mark.asyncio
+async def test_upload_portfolio_too_large(client):
+    token = await register_and_login(client, "user@test.com", "freelancer")
+
+    big_file = b"x" * (5 * 1024 * 1024 + 1)
+
+    with patch("app.application.use_cases.upload_portfolio.s3_service.upload_file"):
+        response = await client.post(
+            "/api/v1/users/me/portfolio",
+            headers={"authorization": f"Bearer {token}"},
+            files=[("files", ("big.jpg", BytesIO(big_file), "image/jpeg"))],
+        )
+
+    assert response.status_code == 400
+    assert "5MB" in response.json()["detail"]

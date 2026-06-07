@@ -216,3 +216,36 @@ async def test_ws_no_event_if_not_connected(client):
         headers={"authorization": f"Bearer {freelancer_token}"},
     )
     assert r.status_code == 201
+
+# ═══════════════════════════════════════════
+# Юнит-тесты ConnectionManager
+# ═══════════════════════════════════════════
+
+@pytest.mark.asyncio
+async def test_manager_is_connected():
+    from app.infrastructure.websocket.manager import ConnectionManager
+    from unittest.mock import AsyncMock
+
+    m = ConnectionManager()
+    ws = AsyncMock()
+    assert m.is_connected("user1") is False
+    await m.connect("user1", ws)
+    assert m.is_connected("user1") is True
+    m.disconnect("user1", ws)
+    assert m.is_connected("user1") is False
+
+
+@pytest.mark.asyncio
+async def test_manager_send_to_user_dead_socket():
+    from app.infrastructure.websocket.manager import ConnectionManager
+    from unittest.mock import AsyncMock
+
+    m = ConnectionManager()
+    ws = AsyncMock()
+    ws.send_json = AsyncMock(side_effect=Exception("connection closed"))
+
+    await m.connect("user1", ws)
+    # dead socket — не должен падать
+    await m.send_to_user("user1", "test_event", {"key": "value"})
+    # после отправки dead socket должен быть удалён
+    assert m.is_connected("user1") is False

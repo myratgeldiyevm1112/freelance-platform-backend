@@ -10,9 +10,6 @@ from app.application.use_cases.update_contract_status import UpdateContractStatu
 from app.domain.entities.user import UserEntity
 from app.infrastructure.repositories.contract_repository import ContractRepository
 
-router = APIRouter(prefix="/contracts", tags=["Contracts"])
-
-
 
 router = APIRouter(prefix="/contracts", tags=["Contracts"])
 
