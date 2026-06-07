@@ -8,6 +8,7 @@ from app.api.v1.routers.reviews import router as reviews_router
 from app.api.v1.routers.websocket import router as websocket_router
 from app.api.v1.routers.skills import router as skills_router
 from app.api.v1.routers.messages import router as messages_router
+from app.api.v1.routers.payments import router as payments_router
 
 api_router = APIRouter(prefix="/api/v1")
 
@@ -20,3 +21,4 @@ api_router.include_router(reviews_router)
 api_router.include_router(websocket_router)
 api_router.include_router(skills_router)
 api_router.include_router(messages_router)
+api_router.include_router(payments_router)
