@@ -5,5 +5,6 @@ from app.infrastructure.database.models.contract import Contract
 from app.infrastructure.database.models.review import Review
 from app.infrastructure.database.models.skill import Skill, UserSkill
 from app.infrastructure.database.models.message import Message
+from app.infrastructure.database.models.payment import Payment, PaymentStatus
 
-__all__ = ["User", "Job", "Proposal", "Contract", "Review", "Skill", "UserSkill", "Message"]
+__all__ = ["Payment", "PaymentStatus", "User", "Job", "Proposal", "Contract", "Review", "Skill", "UserSkill", "Message"]
