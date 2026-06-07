@@ -7,6 +7,7 @@ from app.domain.entities.contract import ContractEntity
 from app.domain.entities.user import UserEntity
 from app.infrastructure.database.models.proposal import ProposalStatus
 from app.infrastructure.database.models.user import UserRole
+from app.infrastructure.database.models.notification import NotificationType
 from app.infrastructure.repositories.contract_repository import ContractRepository
 from app.domain.exceptions import ForbiddenError, NotFoundError, ValidationError
 
@@ -19,11 +20,13 @@ class UpdateProposalStatus:
         job_repo: IJobRepository,
         contract_repo: ContractRepository,
         user_repo: IUserRepository,
+        db=None,
     ):
         self.proposal_repo = proposal_repo
         self.job_repo = job_repo
         self.contract_repo = contract_repo
         self.user_repo = user_repo
+        self.db = db
 
     async def execute(
         self,
@@ -84,6 +87,16 @@ class UpdateProposalStatus:
                         "client_name": current_user.full_name,
                     },
                 )
+
+                if self.db:
+                    from app.infrastructure.notifications.notification_service import NotificationService
+                    await NotificationService(self.db).notify(
+                        user_id=freelancer.id,
+                        type=NotificationType.PROPOSAL_ACCEPTED,
+                        title="Your proposal was accepted!",
+                        message=f"{current_user.full_name} accepted your proposal for '{job.title}'",
+                        related_id=contract.id,
+                    )
 
             return AcceptProposalResponse(
                 proposal=ProposalResponse.model_validate(updated),

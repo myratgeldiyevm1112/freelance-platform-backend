@@ -25,7 +25,7 @@ async def submit_proposal(
     current_user: UserEntity = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    use_case = SubmitProposal(ProposalRepository(db), JobRepository(db), UserRepository(db))
+    use_case = SubmitProposal(ProposalRepository(db), JobRepository(db), UserRepository(db), db)
     return await use_case.execute(job_id, data, current_user)
 
 

@@ -7,6 +7,7 @@ from app.domain.entities.proposal import ProposalEntity
 from app.domain.entities.user import UserEntity
 from app.infrastructure.database.models.job import JobStatus
 from app.infrastructure.database.models.user import UserRole
+from app.infrastructure.database.models.notification import NotificationType
 from app.domain.exceptions import ForbiddenError, NotFoundError, ValidationError, ConflictError
 from app.infrastructure.websocket.manager import manager
 
@@ -18,10 +19,12 @@ class SubmitProposal:
         proposal_repo: IProposalRepository,
         job_repo: IJobRepository,
         user_repo: IUserRepository,
+        db=None,
     ):
         self.proposal_repo = proposal_repo
         self.job_repo = job_repo
         self.user_repo = user_repo
+        self.db = db
 
     async def execute(
         self, job_id: uuid.UUID, data: SubmitProposalRequest, current_user: UserEntity
@@ -36,9 +39,7 @@ class SubmitProposal:
         if job.status != JobStatus.OPEN:
             raise ValidationError("Job is not open for proposals")
 
-        existing = await self.proposal_repo.get_by_freelancer_and_job(
-            current_user.id, job_id
-        )
+        existing = await self.proposal_repo.get_by_freelancer_and_job(current_user.id, job_id)
         if existing:
             raise ConflictError("You already submitted a proposal for this job")
 
@@ -62,7 +63,7 @@ class SubmitProposal:
                 client_email=client.email,
                 freelancer_name=current_user.full_name,
             )
-            
+
             await manager.send_to_user(
                 str(client.id),
                 event="proposal_submitted",
@@ -73,4 +74,15 @@ class SubmitProposal:
                     "proposal_id": str(created.id),
                 },
             )
+
+            if self.db:
+                from app.infrastructure.notifications.notification_service import NotificationService
+                await NotificationService(self.db).notify(
+                    user_id=client.id,
+                    type=NotificationType.PROPOSAL_SUBMITTED,
+                    title="New proposal received",
+                    message=f"{current_user.full_name} submitted a proposal for '{job.title}'",
+                    related_id=created.id,
+                )
+
         return ProposalResponse.model_validate(created)

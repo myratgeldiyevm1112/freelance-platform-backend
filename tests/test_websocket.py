@@ -42,7 +42,6 @@ TEST_DB_URL = "postgresql+asyncpg://postgres:password@localhost:5433/freelance_t
 
 
 def make_ws_client(db_session=None):
-    """TestClient для WS — использует переданную сессию или создаёт новую."""
     if db_session is None:
         from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
         _engine = create_async_engine(TEST_DB_URL)
@@ -75,15 +74,24 @@ def make_ws_client(db_session=None):
     async def override_redis():
         yield redis_mock
 
-    # Сохраняем текущие overrides чтобы не затирать
     saved = dict(app.dependency_overrides)
     app.dependency_overrides[get_db] = override_db
     app.dependency_overrides[get_redis] = override_redis
     client = TestClient(app, raise_server_exceptions=False)
-    # Восстанавливаем
     app.dependency_overrides.clear()
     app.dependency_overrides.update(saved)
     return client
+
+
+def find_call_by_event(mock_send, event_name):
+    """Найти вызов mock_send по имени события."""
+    for call in mock_send.await_args_list:
+        args = call.args
+        kwargs = call.kwargs
+        event = args[1] if len(args) > 1 else kwargs.get("event")
+        if event == event_name:
+            return args, kwargs
+    return None, None
 
 
 # ═══════════════════════════════════════════
@@ -92,10 +100,8 @@ def make_ws_client(db_session=None):
 
 @pytest.mark.asyncio
 async def test_ws_connect_valid_token(client):
-    """Успешное подключение с валидным токеном."""
     token = await register_and_login(client, "wsuser@test.com", "client")
     user_id = await get_user_id(client, token)
-
     ws_client = make_ws_client()
     with ws_client.websocket_connect(f"/api/v1/ws/{user_id}?token={token}") as ws:
         ws.close()
@@ -103,10 +109,8 @@ async def test_ws_connect_valid_token(client):
 
 @pytest.mark.asyncio
 async def test_ws_connect_invalid_token(client):
-    """Отклонение при невалидном токене."""
     token = await register_and_login(client, "wsuser@test.com", "client")
     user_id = await get_user_id(client, token)
-
     ws_client = make_ws_client()
     with pytest.raises(Exception):
         with ws_client.websocket_connect(f"/api/v1/ws/{user_id}?token=bad.token.here"):
@@ -115,11 +119,9 @@ async def test_ws_connect_invalid_token(client):
 
 @pytest.mark.asyncio
 async def test_ws_connect_wrong_user_id(client):
-    """Отклонение если token.sub != user_id в пути."""
     token_a = await register_and_login(client, "userA@test.com", "client")
     token_b = await register_and_login(client, "userB@test.com", "client")
     user_id_b = await get_user_id(client, token_b)
-
     ws_client = make_ws_client()
     with pytest.raises(Exception):
         with ws_client.websocket_connect(f"/api/v1/ws/{user_id_b}?token={token_a}"):
@@ -147,18 +149,12 @@ async def test_ws_receives_proposal_submitted(client):
             headers={"authorization": f"Bearer {freelancer_token}"},
         )
         assert resp.status_code == 201
-        mock_send.assert_awaited_once()
+        mock_send.assert_awaited()
 
-        args   = mock_send.call_args.args
-        kwargs = mock_send.call_args.kwargs
-
-        # user_id всегда positional
+        args, kwargs = find_call_by_event(mock_send, "proposal_submitted")
+        assert args is not None, "proposal_submitted event not found"
         assert args[0] == client_user_id
-        # event и data могут быть positional или keyword
-        event = args[1] if len(args) > 1 else kwargs["event"]
-        data  = args[2] if len(args) > 2 else kwargs["data"]
-
-        assert event == "proposal_submitted"
+        data = args[2] if len(args) > 2 else kwargs.get("data")
         assert data["job_id"] == job_id
         assert "freelancer_name" in data
         assert "proposal_id" in data
@@ -189,23 +185,19 @@ async def test_ws_receives_proposal_accepted(client):
             headers={"authorization": f"Bearer {client_token}"},
         )
         assert resp.status_code == 200
-        mock_send.assert_awaited_once()
+        mock_send.assert_awaited()
 
-        args   = mock_send.call_args.args
-        kwargs = mock_send.call_args.kwargs
-
+        args, kwargs = find_call_by_event(mock_send, "proposal_accepted")
+        assert args is not None, "proposal_accepted event not found"
         assert args[0] == freelancer_user_id
-        event = args[1] if len(args) > 1 else kwargs["event"]
-        data  = args[2] if len(args) > 2 else kwargs["data"]
-
-        assert event == "proposal_accepted"
+        data = args[2] if len(args) > 2 else kwargs.get("data")
         assert data["job_id"] == job_id
         assert "contract_id" in data
         assert "client_name" in data
 
+
 @pytest.mark.asyncio
 async def test_ws_no_event_if_not_connected(client):
-    """Если юзер офлайн — proposal подаётся без ошибок (500)."""
     client_token = await register_and_login(client, "client@test.com", "client")
     freelancer_token = await register_and_login(client, "freelancer@test.com", "freelancer")
     job_id = await create_job(client, client_token)
@@ -216,6 +208,7 @@ async def test_ws_no_event_if_not_connected(client):
         headers={"authorization": f"Bearer {freelancer_token}"},
     )
     assert r.status_code == 201
+
 
 # ═══════════════════════════════════════════
 # Юнит-тесты ConnectionManager
@@ -245,7 +238,5 @@ async def test_manager_send_to_user_dead_socket():
     ws.send_json = AsyncMock(side_effect=Exception("connection closed"))
 
     await m.connect("user1", ws)
-    # dead socket — не должен падать
     await m.send_to_user("user1", "test_event", {"key": "value"})
-    # после отправки dead socket должен быть удалён
     assert m.is_connected("user1") is False
