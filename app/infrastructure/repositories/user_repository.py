@@ -76,3 +76,41 @@ class UserRepository(IUserRepository):
         if user:
             user.portfolio_urls = urls
             await self.session.flush()
+    async def search_freelancers(
+        self,
+        skill: str | None = None,
+        min_rate: float | None = None,
+        max_rate: float | None = None,
+        min_rating: float | None = None,
+        q: str | None = None,
+        limit: int = 20,
+        offset: int = 0,
+    ) -> list[UserEntity]:
+        from sqlalchemy import and_, or_
+        from app.infrastructure.database.models.user import UserRole
+        from app.infrastructure.database.models.skill import UserSkill, Skill
+
+        stmt = select(User).where(
+            User.role == UserRole.FREELANCER,
+            User.is_active == True,
+        )
+
+        if min_rate is not None:
+            stmt = stmt.where(User.hourly_rate >= min_rate)
+        if max_rate is not None:
+            stmt = stmt.where(User.hourly_rate <= max_rate)
+        if q:
+            stmt = stmt.where(
+                or_(
+                    User.full_name.ilike(f"%{q}%"),
+                    User.bio.ilike(f"%{q}%"),
+                )
+            )
+        if skill:
+            stmt = stmt.join(UserSkill, UserSkill.user_id == User.id).join(
+                Skill, Skill.id == UserSkill.skill_id
+            ).where(Skill.name == skill.lower().strip())
+
+        stmt = stmt.limit(limit).offset(offset)
+        result = await self.session.execute(stmt)
+        return [self._to_entity(u) for u in result.scalars().all()]

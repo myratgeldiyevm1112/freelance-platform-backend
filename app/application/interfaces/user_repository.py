@@ -23,3 +23,15 @@ class IUserRepository(ABC):
     @abstractmethod
     async def update(self, user_id, data) -> UserEntity:
         raise NotImplementedError
+    @abstractmethod
+    async def search_freelancers(
+        self,
+        skill: str | None,
+        min_rate: float | None,
+        max_rate: float | None,
+        min_rating: float | None,
+        q: str | None,
+        limit: int,
+        offset: int,
+    ) -> list[UserEntity]:
+        raise NotImplementedError

@@ -59,3 +59,13 @@ class SkillResponse(BaseModel):
 
 class UserSkillsResponse(BaseModel):
     skills: list[SkillResponse]
+
+class FreelancerPublicProfile(BaseModel):
+    id: uuid.UUID
+    full_name: str
+    bio: str | None
+    hourly_rate: float | None
+    avatar_url: str | None
+    portfolio_urls: list | None
+
+    model_config = {"from_attributes": True}
