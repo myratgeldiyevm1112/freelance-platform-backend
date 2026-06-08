@@ -50,7 +50,7 @@ async def test_get_jobs(client):
     )
     response = await client.get("/api/v1/jobs/", headers={"authorization": f"Bearer {token}"})
     assert response.status_code == 200
-    assert len(response.json()) >= 1
+    assert len(response.json()["items"]) >= 1
 
 
 @pytest.mark.asyncio

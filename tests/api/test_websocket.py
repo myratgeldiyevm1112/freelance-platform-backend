@@ -74,15 +74,10 @@ def make_ws_client(db_session=None):
     async def override_redis():
         yield redis_mock
 
-    saved = dict(app.dependency_overrides)
     app.dependency_overrides[get_db] = override_db
     app.dependency_overrides[get_redis] = override_redis
     client = TestClient(app, raise_server_exceptions=False)
-    app.dependency_overrides.clear()
-    app.dependency_overrides.update(saved)
     return client
-
-
 def find_call_by_event(mock_send, event_name):
     """Найти вызов mock_send по имени события."""
     for call in mock_send.await_args_list:

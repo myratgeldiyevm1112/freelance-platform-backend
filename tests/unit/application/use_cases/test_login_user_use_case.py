@@ -1,6 +1,6 @@
 import uuid
 import pytest
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, patch
 from datetime import datetime
 
 from app.application.use_cases.login_user import LoginUser
@@ -31,15 +31,9 @@ async def test_login_success():
     user_repo.get_hashed_password.return_value = "$2b$12$validhashedpassword"
     token_store = AsyncMock()
 
-    with __import__("unittest.mock", fromlist=["patch"]).patch(
-        "app.application.use_cases.login_user.verify_password", return_value=True
-    ):
-        with __import__("unittest.mock", fromlist=["patch"]).patch(
-            "app.application.use_cases.login_user.create_access_token", return_value="access_token"
-        ):
-            with __import__("unittest.mock", fromlist=["patch"]).patch(
-                "app.application.use_cases.login_user.create_refresh_token", return_value="refresh_token"
-            ):
+    with patch("app.application.use_cases.login_user.verify_password", return_value=True):
+        with patch("app.application.use_cases.login_user.create_access_token", return_value="access_token"):
+            with patch("app.application.use_cases.login_user.create_refresh_token", return_value="refresh_token"):
                 use_case = make_use_case(user_repo, token_store)
                 result = await use_case.execute(LoginRequest(email="user@test.com", password="password123"))
 
@@ -88,9 +82,7 @@ async def test_login_wrong_password():
     user_repo.get_hashed_password.return_value = "$2b$12$validhashedpassword"
     token_store = AsyncMock()
 
-    with __import__("unittest.mock", fromlist=["patch"]).patch(
-        "app.application.use_cases.login_user.verify_password", return_value=False
-    ):
+    with patch("app.application.use_cases.login_user.verify_password", return_value=False):
         use_case = make_use_case(user_repo, token_store)
 
         with pytest.raises(UnauthorizedError):
@@ -107,15 +99,9 @@ async def test_login_saves_refresh_token():
     user_repo.get_hashed_password.return_value = "$2b$12$validhashedpassword"
     token_store = AsyncMock()
 
-    with __import__("unittest.mock", fromlist=["patch"]).patch(
-        "app.application.use_cases.login_user.verify_password", return_value=True
-    ):
-        with __import__("unittest.mock", fromlist=["patch"]).patch(
-            "app.application.use_cases.login_user.create_refresh_token", return_value="rt_xyz"
-        ):
-            with __import__("unittest.mock", fromlist=["patch"]).patch(
-                "app.application.use_cases.login_user.create_access_token", return_value="at_xyz"
-            ):
+    with patch("app.application.use_cases.login_user.verify_password", return_value=True):
+        with patch("app.application.use_cases.login_user.create_refresh_token", return_value="rt_xyz"):
+            with patch("app.application.use_cases.login_user.create_access_token", return_value="at_xyz"):
                 use_case = make_use_case(user_repo, token_store)
                 await use_case.execute(LoginRequest(email="user@test.com", password="pass"))
 
@@ -135,15 +121,9 @@ async def test_login_client_role_success():
     user_repo.get_hashed_password.return_value = "$2b$12$hash"
     token_store = AsyncMock()
 
-    with __import__("unittest.mock", fromlist=["patch"]).patch(
-        "app.application.use_cases.login_user.verify_password", return_value=True
-    ):
-        with __import__("unittest.mock", fromlist=["patch"]).patch(
-            "app.application.use_cases.login_user.create_access_token", return_value="at"
-        ):
-            with __import__("unittest.mock", fromlist=["patch"]).patch(
-                "app.application.use_cases.login_user.create_refresh_token", return_value="rt"
-            ):
+    with patch("app.application.use_cases.login_user.verify_password", return_value=True):
+        with patch("app.application.use_cases.login_user.create_access_token", return_value="at"):
+            with patch("app.application.use_cases.login_user.create_refresh_token", return_value="rt"):
                 use_case = make_use_case(user_repo, token_store)
                 result = await use_case.execute(LoginRequest(email="client@test.com", password="pass"))
 
