@@ -3,6 +3,7 @@ from app.application.interfaces.payment_repository import IPaymentRepository
 from app.domain.entities.payment import PaymentEntity
 from app.domain.entities.user import UserEntity
 from app.domain.exceptions import NotFoundError, ForbiddenError, ValidationError
+from app.infrastructure.database.models.payment import PaymentStatus
 
 
 class ReleasePayment:
@@ -15,7 +16,7 @@ class ReleasePayment:
             raise NotFoundError("Payment not found")
         if payment.client_id != current_user.id:
             raise ForbiddenError("Only the client can release payment")
-        if payment.status != "escrowed":
+        if payment.status != PaymentStatus.ESCROWED:
             raise ValidationError("Payment is not in escrowed state")
 
         # В тестовом режиме пропускаем transfer

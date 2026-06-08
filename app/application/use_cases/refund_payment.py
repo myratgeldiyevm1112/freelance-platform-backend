@@ -4,6 +4,7 @@ from app.domain.entities.payment import PaymentEntity
 from app.domain.entities.user import UserEntity
 from app.domain.exceptions import NotFoundError, ForbiddenError, ValidationError
 from app.infrastructure.payment.stripe_service import stripe_service
+from app.infrastructure.database.models.payment import PaymentStatus
 
 
 class RefundPayment:
@@ -16,7 +17,7 @@ class RefundPayment:
             raise NotFoundError("Payment not found")
         if payment.client_id != current_user.id:
             raise ForbiddenError("Only the client can refund payment")
-        if payment.status != "escrowed":
+        if payment.status != PaymentStatus.ESCROWED:
             raise ValidationError("Only escrowed payments can be refunded")
 
         if payment.stripe_payment_intent_id:
