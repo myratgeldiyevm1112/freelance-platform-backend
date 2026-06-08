@@ -82,3 +82,36 @@ async def test_refresh_token(client):
     })
     assert response.status_code == 200
     assert "access_token" in response.json()
+
+@pytest.mark.asyncio
+async def test_logout_success(client):
+    # Регистрируемся и логинимся, чтобы получить реальный refresh_token
+    await client.post("/api/v1/auth/register", json={
+        "email": "logout_test@example.com",
+        "password": "password123",
+        "full_name": "Logout User",
+        "role": "client"
+    })
+    login_response = await client.post("/api/v1/auth/login", json={
+        "email": "logout_test@example.com",
+        "password": "password123"
+    })
+    refresh_token = login_response.json()["refresh_token"]
+
+    # Делаем логаут
+    response = await client.post("/api/v1/auth/logout", json={
+        "refresh_token": refresh_token
+    })
+    
+    assert response.status_code == 204
+
+
+@pytest.mark.asyncio
+async def test_logout_invalid_token_suppressed(client):
+    # Передаем заведомо сломанный токен, чтобы сработал блок 'except ValueError'
+    response = await client.post("/api/v1/auth/logout", json={
+        "refresh_token": "completely_invalid_token_garbage"
+    })
+    
+    # Роутер должен проглотить ошибку и вернуть 204
+    assert response.status_code == 204
