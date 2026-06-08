@@ -71,12 +71,15 @@ class UpdateProposalStatus:
             if freelancer:
                 from app.infrastructure.tasks.notifications import send_contract_notification
                 from app.infrastructure.websocket.manager import manager
-
-                send_contract_notification.delay(
-                    job_title=job.title,
-                    freelancer_email=freelancer.email,
-                    client_name=current_user.full_name,
-                )
+                try:
+                    send_contract_notification.delay(
+                        job_title=job.title,
+                        freelancer_email=freelancer.email,
+                        client_name=current_user.full_name,
+                    )
+                except Exception:
+                    pass
+                    
                 await manager.send_to_user(
                     str(proposal.freelancer_id),
                     event="proposal_accepted",

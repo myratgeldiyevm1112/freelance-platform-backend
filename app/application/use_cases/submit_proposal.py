@@ -58,12 +58,15 @@ class SubmitProposal:
         client = await self.user_repo.get_by_id(job.client_id)
         if client:
             from app.infrastructure.tasks.notifications import send_proposal_notification
-            send_proposal_notification.delay(
-                job_title=job.title,
-                client_email=client.email,
-                freelancer_name=current_user.full_name,
-            )
-
+            try:
+                send_proposal_notification.delay(
+                    job_title=job.title,
+                    client_email=client.email,
+                    freelancer_name=current_user.full_name,
+                )
+            except Exception:
+                pass
+                
             await manager.send_to_user(
                 str(client.id),
                 event="proposal_submitted",
