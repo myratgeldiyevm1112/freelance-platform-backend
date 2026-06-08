@@ -16,3 +16,4 @@ class UserEntity:
     hourly_rate: float | None = None
     avatar_url: str | None = None
     portfolio_urls: list | None = None
+    is_admin: bool = False
