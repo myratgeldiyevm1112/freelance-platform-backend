@@ -39,3 +39,11 @@ async def get_current_user(
         )
 
     return user
+
+async def get_admin_user(
+    current_user: UserEntity = Depends(get_current_user),
+) -> UserEntity:
+    from app.domain.exceptions import ForbiddenError
+    if not current_user.is_admin:
+        raise ForbiddenError("Admin access required")
+    return current_user
