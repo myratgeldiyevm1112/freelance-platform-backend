@@ -11,7 +11,9 @@ from app.api.v1.routers.messages import router as messages_router
 from app.api.v1.routers.payments import router as payments_router
 from app.api.v1.routers.notifications import router as notifications_router
 from app.api.v1.routers.freelancers import router as freelancers_router
+from app.api.v1.routers.disputes import router as disputes_router
 from app.api.v1.routers.freelancers import router as freelancers_router
+from app.api.v1.routers.disputes import router as disputes_router
 
 api_router = APIRouter(prefix="/api/v1")
 
@@ -27,4 +29,6 @@ api_router.include_router(messages_router)
 api_router.include_router(payments_router)
 api_router.include_router(notifications_router)
 api_router.include_router(freelancers_router)
+api_router.include_router(disputes_router)
 api_router.include_router(freelancers_router)
+api_router.include_router(disputes_router)
