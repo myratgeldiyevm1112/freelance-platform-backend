@@ -1,5 +1,4 @@
 import uuid
-from app.application.interfaces.user_repository import IUserRepository
 from app.domain.entities.user import UserEntity
 from app.domain.exceptions import NotFoundError
 from sqlalchemy.ext.asyncio import AsyncSession

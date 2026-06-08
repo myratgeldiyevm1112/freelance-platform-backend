@@ -87,7 +87,7 @@ class UserRepository(IUserRepository):
         limit: int = 20,
         offset: int = 0,
     ) -> list[UserEntity]:
-        from sqlalchemy import and_, or_
+        from sqlalchemy import or_
         from app.infrastructure.database.models.user import UserRole
         from app.infrastructure.database.models.skill import UserSkill, Skill
 

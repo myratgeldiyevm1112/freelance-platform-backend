@@ -1,7 +1,6 @@
 import uuid
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
-from app.domain.entities.job import JobEntity
+from sqlalchemy import select
 from app.domain.exceptions import NotFoundError
 from app.infrastructure.database.models.job import Job
 

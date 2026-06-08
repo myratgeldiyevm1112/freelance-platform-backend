@@ -1,5 +1,4 @@
 import pytest
-from unittest.mock import AsyncMock, patch
 from sqlalchemy import select
 from app.infrastructure.database.models.user import User
 

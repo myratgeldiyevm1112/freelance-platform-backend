@@ -7,7 +7,6 @@ from app.domain.entities.user import UserEntity
 from app.domain.exceptions import NotFoundError, ForbiddenError, ValidationError
 from app.infrastructure.database.models.dispute import DisputeStatus
 from app.infrastructure.database.models.contract import ContractStatus
-from app.infrastructure.database.models.user import UserRole
 
 
 class ResolveDispute:
