@@ -19,5 +19,6 @@ class User(BaseModel):
     bio: Mapped[str | None] = mapped_column(Text, nullable=True)
     hourly_rate: Mapped[float | None] = mapped_column(Numeric(10, 2), nullable=True)
     is_active: Mapped[bool] = mapped_column(default=True)
+    is_admin: Mapped[bool] = mapped_column(default=False)
     avatar_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     portfolio_urls: Mapped[list | None] = mapped_column(JSON, nullable=True)

@@ -21,6 +21,7 @@ class UserRepository(IUserRepository):
             bio=model.bio,
             hourly_rate=model.hourly_rate,
             avatar_url=model.avatar_url,
+            is_admin=model.is_admin,
             portfolio_urls=model.portfolio_urls,
         )
 
