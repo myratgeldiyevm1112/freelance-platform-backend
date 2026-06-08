@@ -12,6 +12,7 @@ from app.core.exception_handlers import register_exception_handlers
 from app.core.middleware import logging_middleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from app.infrastructure.cache.redis_client import get_redis_client, close_redis_client
+from prometheus_fastapi_instrumentator import Instrumentator
 
 setup_logging()
 
@@ -97,3 +98,5 @@ def custom_openapi():
     return schema
 
 app.openapi = custom_openapi
+
+Instrumentator().instrument(app).expose(app, endpoint="/metrics", include_in_schema=False)
