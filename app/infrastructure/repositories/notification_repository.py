@@ -76,7 +76,7 @@ class NotificationRepository(INotificationRepository):
     async def mark_all_as_read(self, user_id: uuid.UUID) -> None:
         stmt = select(Notification).where(
             Notification.user_id == user_id,
-            Notification.is_read == False,
+            Notification.is_read.is_(False),
         )
         result = await self.db.execute(stmt)
         notifications = result.scalars().all()
@@ -87,7 +87,7 @@ class NotificationRepository(INotificationRepository):
     async def get_unread_count(self, user_id: uuid.UUID) -> int:
         stmt = select(func.count()).where(
             Notification.user_id == user_id,
-            Notification.is_read == False,
+            Notification.is_read.is_(False),
         )
         result = await self.db.execute(stmt)
         return result.scalar() or 0

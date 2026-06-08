@@ -21,10 +21,36 @@ services:
         fromDatabase:
           name: freelance-db
           property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: freelance-redis
+          type: redis
+          property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          name: freelance-redis
+          type: redis
+          property: connectionString
       - key: ALLOWED_ORIGINS
         value: '["*"]'
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: AWS_ACCESS_KEY
+        sync: false
+      - key: AWS_SECRET_KEY
+        sync: false
+      - key: S3_BUCKET
+        value: freelance-platform
+      - key: S3_ENDPOINT_URL
+        sync: false
 
 databases:
   - name: freelance-db
     databaseName: freelance_db
     user: freelance_user
+
+  - type: redis
+    name: freelance-redis
+    ipAllowList: []

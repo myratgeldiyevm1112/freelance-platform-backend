@@ -1,18 +1,14 @@
 name: CI
-
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   test:
     runs-on: ubuntu-latest
-
     services:
       postgres:
         image: postgres:latest
@@ -27,7 +23,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
       redis:
         image: redis:latest
         ports:
@@ -37,22 +32,17 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
       - name: Install dependencies
         run: pip install -r requirements.txt
-
       - name: Lint with ruff
         run: ruff check app/
-
       - name: Run tests
         env:
           APP_ENV: development
@@ -64,4 +54,10 @@ jobs:
           ACCESS_TOKEN_EXPIRE_MINUTES: 30
           REFRESH_TOKEN_EXPIRE_DAYS: 7
           ALLOWED_ORIGINS: '["http://localhost:3000"]'
+          STRIPE_SECRET_KEY: sk_test_dummy
+          STRIPE_WEBHOOK_SECRET: whsec_dummy
+          AWS_ACCESS_KEY: dummy
+          AWS_SECRET_KEY: dummy
+          S3_BUCKET: test-bucket
+          S3_ENDPOINT_URL: http://localhost:9000
         run: pytest tests/ -v --cov=app --cov-report=term-missing

@@ -5,7 +5,8 @@
 ![CI](https://github.com/myratgeldiyevm1112/freelance-platform-backend/actions/workflows/ci.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.12-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.136-green)
-![Coverage](https://img.shields.io/badge/coverage-83%25-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-85%25-brightgreen)
+![Tests](https://img.shields.io/badge/tests-105-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
 **Live API:** https://freelance-platform-backend-gkyj.onrender.com/docs
@@ -14,18 +15,18 @@
 
 ## 📌 Overview
 
-Freelance Platform is a backend API that powers a marketplace where **clients post jobs** and **freelancers submit proposals**. Inspired by platforms like Upwork, it covers the full lifecycle:
+Freelance Platform is a backend API that powers a marketplace where **clients post jobs** and **freelancers submit proposals**. Inspired by platforms like Upwork and FL.ru, it covers the full lifecycle:
 
 ```
-Register → Post Job → Submit Proposal → Accept → Contract → Complete → Review
+Register → Post Job → Submit Proposal → Accept → Contract → Pay (Escrow) → Complete → Review
 ```
 
 Built as a portfolio project demonstrating:
 - **Clean Architecture** with clear separation of concerns
 - **Async Python** with FastAPI + SQLAlchemy
-- **Professional testing** — 84 tests, 83% coverage
+- **Professional testing** — 105 tests, 85%+ coverage
 - **CI/CD** with GitHub Actions + Render deployment
-- **Production features** — Redis caching, rate limiting, Celery, WebSockets, S3
+- **Production features** — Redis caching, rate limiting, Celery, WebSockets, S3, Stripe payments
 
 ---
 
@@ -41,9 +42,10 @@ Built as a portfolio project demonstrating:
 | Background Tasks | Celery + Redis broker |
 | File Storage | AWS S3 / MinIO |
 | Real-time | WebSockets |
+| Payments | Stripe (escrow, transfers, refunds) |
 | Validation | Pydantic v2 |
 | Rate Limiting | SlowAPI |
-| Testing | Pytest + pytest-asyncio (84 tests) |
+| Testing | Pytest + pytest-asyncio (105 tests) |
 | Linting | Ruff |
 | CI/CD | GitHub Actions + Render |
 | Containerization | Docker + Docker Compose |
@@ -75,6 +77,24 @@ Built as a portfolio project demonstrating:
 - Status lifecycle: `active` → `completed` / `cancelled`
 - Email notification via Celery background task
 
+### Payments (Stripe Escrow)
+- Client pays on proposal acceptance — funds held in escrow
+- Release payment to freelancer on contract completion
+- Platform commission (10%) automatically withheld
+- Refund on contract cancellation
+- Stripe webhook handling: `payment_intent.succeeded`, `payment_intent.payment_failed`
+
+### Messaging (Real-time Chat)
+- Send messages between client and freelancer per job/contract
+- Conversations endpoint with full message history
+- Unread message count
+- Real-time delivery via WebSocket
+
+### Notifications Center
+- System notifications for all platform events (proposals, contracts, payments, messages)
+- Mark as read (single)
+- Real-time WebSocket push on new notification
+
 ### Reviews
 - Leave reviews after contract completion
 - Rating system (1–5 stars)
@@ -91,7 +111,7 @@ Built as a portfolio project demonstrating:
 - Stored in S3/MinIO, URL saved to profile
 
 ### WebSockets
-- Real-time notifications: `proposal_submitted`, `proposal_accepted`
+- Real-time notifications and chat messages
 - JWT authentication on handshake
 - Multiple connections per user supported
 
@@ -110,7 +130,7 @@ application/     ← Business logic (use cases, DTOs, interfaces)
     ↓
 domain/          ← Core entities and exceptions (no dependencies)
     ↑
-infrastructure/  ← DB models, repositories, Redis, S3, Celery, WebSocket
+infrastructure/  ← DB models, repositories, Redis, S3, Celery, Stripe, WebSocket
 ```
 
 **Dependency rule:** outer layers depend on inner layers. Domain knows nothing about FastAPI or SQLAlchemy.
@@ -119,12 +139,17 @@ infrastructure/  ← DB models, repositories, Redis, S3, Celery, WebSocket
 
 ## 📬 API Endpoints
 
+### Auth
 | Method | Endpoint | Description |
 |---|---|---|
 | POST | `/api/v1/auth/register` | Register new user |
 | POST | `/api/v1/auth/login` | Login, get tokens |
 | POST | `/api/v1/auth/refresh` | Refresh access token |
 | POST | `/api/v1/auth/logout` | Logout, invalidate refresh token |
+
+### Users & Skills
+| Method | Endpoint | Description |
+|---|---|---|
 | GET | `/api/v1/users/me` | Get my profile |
 | PATCH | `/api/v1/users/me` | Update my profile |
 | POST | `/api/v1/users/me/avatar` | Upload avatar (JPG/PNG) |
@@ -132,18 +157,55 @@ infrastructure/  ← DB models, repositories, Redis, S3, Celery, WebSocket
 | POST | `/api/v1/users/me/skills` | Add skills to profile |
 | GET | `/api/v1/users/me/skills` | Get my skills |
 | DELETE | `/api/v1/users/me/skills/{skill_id}` | Remove skill |
+
+### Jobs
+| Method | Endpoint | Description |
+|---|---|---|
 | POST | `/api/v1/jobs/` | Create job (client) |
 | GET | `/api/v1/jobs/` | List jobs (paginated, filterable, searchable) |
 | GET | `/api/v1/jobs/{job_id}` | Get job by ID |
+
+### Proposals & Contracts
+| Method | Endpoint | Description |
+|---|---|---|
 | POST | `/api/v1/proposals/jobs/{job_id}/proposals` | Submit proposal |
 | GET | `/api/v1/proposals/jobs/{job_id}/proposals` | List proposals |
 | PATCH | `/api/v1/proposals/{proposal_id}` | Accept/reject proposal |
 | GET | `/api/v1/contracts/{contract_id}` | Get contract |
 | PATCH | `/api/v1/contracts/{contract_id}/status` | Update contract status |
+
+### Payments
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/v1/payments` | Create payment intent (escrow) |
+| POST | `/api/v1/payments/{payment_id}/release` | Release funds to freelancer |
+| POST | `/api/v1/payments/{payment_id}/refund` | Refund payment |
+| POST | `/api/v1/payments/webhook` | Stripe webhook handler |
+
+### Messages
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/v1/messages` | Send message |
+| GET | `/api/v1/messages/conversations/{user_id}` | Get conversation history |
+| GET | `/api/v1/messages/unread-count` | Get unread message count |
+
+### Notifications
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/v1/notifications` | List notifications (paginated) |
+| PATCH | `/api/v1/notifications/{id}/read` | Mark notification as read |
+
+### Reviews
+| Method | Endpoint | Description |
+|---|---|---|
 | POST | `/api/v1/reviews/` | Leave review |
 | GET | `/api/v1/reviews/user/{user_id}` | Get user reviews |
 | GET | `/api/v1/reviews/user/{user_id}/rating` | Get user rating |
-| WS | `/api/v1/ws/{user_id}?token=...` | WebSocket real-time notifications |
+
+### Real-time
+| Method | Endpoint | Description |
+|---|---|---|
+| WS | `/api/v1/ws/{user_id}?token=...` | WebSocket — notifications + chat |
 
 Full interactive docs: https://freelance-platform-backend-gkyj.onrender.com/docs
 
@@ -164,11 +226,13 @@ cp .env.example .env
 docker-compose up --build
 ```
 
-API: `http://localhost:8000`  
-Docs: `http://localhost:8000/docs`  
-Flower (Celery monitor): `http://localhost:5555`  
-MailHog (email preview): `http://localhost:8025`  
-MinIO (file storage): `http://localhost:9001`
+| Service | URL |
+|---|---|
+| API | http://localhost:8000 |
+| Swagger Docs | http://localhost:8000/docs |
+| Flower (Celery) | http://localhost:5555 |
+| MailHog (email) | http://localhost:8025 |
+| MinIO (storage) | http://localhost:9001 |
 
 ### Run locally
 
@@ -196,7 +260,7 @@ pytest tests/ -v --cov=app --cov-report=term-missing
 pytest tests/unit/ -v
 ```
 
-**84 tests** — unit + integration, **83% coverage**
+**105 tests** — unit + integration, **85%+ coverage**
 
 ---
 
@@ -217,6 +281,8 @@ AWS_ACCESS_KEY=your-access-key
 AWS_SECRET_KEY=your-secret-key
 S3_BUCKET=freelance-platform
 S3_ENDPOINT_URL=http://localhost:9000
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
 ```
 
 ---

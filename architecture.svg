@@ -1,5 +1,5 @@
-<svg width="100%" viewBox="0 0 680 520" role="img" xmlns="http://www.w3.org/2000/svg">
-<title>Freelance Platform Clean Architecture</title>
+<svg width="100%" viewBox="0 0 860 560" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>Freelance Platform Clean Architecture v1.2</title>
 <desc>Four layers: API, Application, Domain, Infrastructure</desc>
 <defs>
 <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -8,74 +8,88 @@
 </defs>
 
 <!-- API Layer -->
-<rect x="40" y="30" width="600" height="90" rx="12" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
-<text font-family="sans-serif" font-weight="500" font-size="14" fill="#0C447C" x="340" y="60" text-anchor="middle">API layer</text>
-<text font-family="sans-serif" font-size="12" fill="#185FA5" x="340" y="78" text-anchor="middle">routers · dependencies · middleware</text>
+<rect x="40" y="30" width="780" height="100" rx="12" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text font-family="sans-serif" font-weight="500" font-size="14" fill="#0C447C" x="430" y="58" text-anchor="middle">API layer</text>
+<text font-family="sans-serif" font-size="12" fill="#185FA5" x="430" y="76" text-anchor="middle">routers · dependencies · middleware</text>
 
-<rect x="60"  y="88" width="90"  height="26" rx="6" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
-<rect x="162" y="88" width="90"  height="26" rx="6" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
-<rect x="264" y="88" width="100" height="26" rx="6" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
-<rect x="376" y="88" width="100" height="26" rx="6" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
-<rect x="488" y="88" width="90"  height="26" rx="6" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
-<text font-family="sans-serif" font-size="12" fill="#0C447C" x="105" y="106" text-anchor="middle">auth.py</text>
-<text font-family="sans-serif" font-size="12" fill="#0C447C" x="207" y="106" text-anchor="middle">jobs.py</text>
-<text font-family="sans-serif" font-size="12" fill="#0C447C" x="314" y="106" text-anchor="middle">proposals.py</text>
-<text font-family="sans-serif" font-size="12" fill="#0C447C" x="426" y="106" text-anchor="middle">contracts.py</text>
-<text font-family="sans-serif" font-size="12" fill="#0C447C" x="533" y="106" text-anchor="middle">reviews.py</text>
+<rect x="55"  y="86" width="84"  height="26" rx="6" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+<rect x="149" y="86" width="84"  height="26" rx="6" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+<rect x="243" y="86" width="100" height="26" rx="6" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+<rect x="353" y="86" width="100" height="26" rx="6" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+<rect x="463" y="86" width="84"  height="26" rx="6" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+<rect x="557" y="86" width="100" height="26" rx="6" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+<rect x="667" y="86" width="110" height="26" rx="6" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+<text font-family="sans-serif" font-size="11" fill="#0C447C" x="97"  y="104" text-anchor="middle">auth.py</text>
+<text font-family="sans-serif" font-size="11" fill="#0C447C" x="191" y="104" text-anchor="middle">jobs.py</text>
+<text font-family="sans-serif" font-size="11" fill="#0C447C" x="293" y="104" text-anchor="middle">proposals.py</text>
+<text font-family="sans-serif" font-size="11" fill="#0C447C" x="403" y="104" text-anchor="middle">contracts.py</text>
+<text font-family="sans-serif" font-size="11" fill="#0C447C" x="505" y="104" text-anchor="middle">reviews.py</text>
+<text font-family="sans-serif" font-size="11" fill="#0C447C" x="607" y="104" text-anchor="middle">payments.py</text>
+<text font-family="sans-serif" font-size="11" fill="#0C447C" x="722" y="104" text-anchor="middle">messages · notif</text>
 
-<line x1="340" y1="122" x2="340" y2="148" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="430" y1="132" x2="430" y2="158" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
 
 <!-- Application Layer -->
-<rect x="40" y="150" width="600" height="90" rx="12" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
-<text font-family="sans-serif" font-weight="500" font-size="14" fill="#085041" x="340" y="178" text-anchor="middle">Application layer</text>
-<text font-family="sans-serif" font-size="12" fill="#0F6E56" x="340" y="196" text-anchor="middle">use cases · DTOs · interfaces</text>
+<rect x="40" y="160" width="780" height="100" rx="12" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text font-family="sans-serif" font-weight="500" font-size="14" fill="#085041" x="430" y="188" text-anchor="middle">Application layer</text>
+<text font-family="sans-serif" font-size="12" fill="#0F6E56" x="430" y="206" text-anchor="middle">use cases · DTOs · interfaces</text>
 
-<rect x="60"  y="208" width="110" height="26" rx="6" fill="#9FE1CB" stroke="#0F6E56" stroke-width="0.5"/>
-<rect x="182" y="208" width="90"  height="26" rx="6" fill="#9FE1CB" stroke="#0F6E56" stroke-width="0.5"/>
-<rect x="284" y="208" width="110" height="26" rx="6" fill="#9FE1CB" stroke="#0F6E56" stroke-width="0.5"/>
-<rect x="406" y="208" width="110" height="26" rx="6" fill="#9FE1CB" stroke="#0F6E56" stroke-width="0.5"/>
-<rect x="528" y="208" width="90"  height="26" rx="6" fill="#9FE1CB" stroke="#0F6E56" stroke-width="0.5"/>
-<text font-family="sans-serif" font-size="12" fill="#085041" x="115" y="226" text-anchor="middle">register_user</text>
-<text font-family="sans-serif" font-size="12" fill="#085041" x="227" y="226" text-anchor="middle">create_job</text>
-<text font-family="sans-serif" font-size="12" fill="#085041" x="339" y="226" text-anchor="middle">submit_proposal</text>
-<text font-family="sans-serif" font-size="12" fill="#085041" x="461" y="226" text-anchor="middle">leave_review</text>
-<text font-family="sans-serif" font-size="12" fill="#085041" x="573" y="226" text-anchor="middle">IRepository</text>
+<rect x="55"  y="218" width="110" height="26" rx="6" fill="#9FE1CB" stroke="#0F6E56" stroke-width="0.5"/>
+<rect x="175" y="218" width="90"  height="26" rx="6" fill="#9FE1CB" stroke="#0F6E56" stroke-width="0.5"/>
+<rect x="275" y="218" width="120" height="26" rx="6" fill="#9FE1CB" stroke="#0F6E56" stroke-width="0.5"/>
+<rect x="405" y="218" width="110" height="26" rx="6" fill="#9FE1CB" stroke="#0F6E56" stroke-width="0.5"/>
+<rect x="525" y="218" width="110" height="26" rx="6" fill="#9FE1CB" stroke="#0F6E56" stroke-width="0.5"/>
+<rect x="645" y="218" width="110" height="26" rx="6" fill="#9FE1CB" stroke="#0F6E56" stroke-width="0.5"/>
+<text font-family="sans-serif" font-size="11" fill="#085041" x="110" y="236" text-anchor="middle">register_user</text>
+<text font-family="sans-serif" font-size="11" fill="#085041" x="220" y="236" text-anchor="middle">create_job</text>
+<text font-family="sans-serif" font-size="11" fill="#085041" x="335" y="236" text-anchor="middle">submit_proposal</text>
+<text font-family="sans-serif" font-size="11" fill="#085041" x="460" y="236" text-anchor="middle">leave_review</text>
+<text font-family="sans-serif" font-size="11" fill="#085041" x="580" y="236" text-anchor="middle">send_message</text>
+<text font-family="sans-serif" font-size="11" fill="#085041" x="700" y="236" text-anchor="middle">IRepository</text>
 
-<line x1="340" y1="242" x2="340" y2="268" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="430" y1="262" x2="430" y2="288" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
 
 <!-- Domain Layer -->
-<rect x="40" y="270" width="600" height="90" rx="12" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
-<text font-family="sans-serif" font-weight="500" font-size="14" fill="#3C3489" x="340" y="298" text-anchor="middle">Domain layer</text>
-<text font-family="sans-serif" font-size="12" fill="#534AB7" x="340" y="316" text-anchor="middle">entities · exceptions · business rules (no external deps)</text>
+<rect x="40" y="290" width="780" height="100" rx="12" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+<text font-family="sans-serif" font-weight="500" font-size="14" fill="#3C3489" x="430" y="318" text-anchor="middle">Domain layer</text>
+<text font-family="sans-serif" font-size="12" fill="#534AB7" x="430" y="336" text-anchor="middle">entities · exceptions · business rules (no external deps)</text>
 
-<rect x="60"  y="328" width="80"  height="26" rx="6" fill="#CECBF6" stroke="#534AB7" stroke-width="0.5"/>
-<rect x="152" y="328" width="80"  height="26" rx="6" fill="#CECBF6" stroke="#534AB7" stroke-width="0.5"/>
-<rect x="244" y="328" width="100" height="26" rx="6" fill="#CECBF6" stroke="#534AB7" stroke-width="0.5"/>
-<rect x="356" y="328" width="110" height="26" rx="6" fill="#CECBF6" stroke="#534AB7" stroke-width="0.5"/>
-<rect x="478" y="328" width="100" height="26" rx="6" fill="#CECBF6" stroke="#534AB7" stroke-width="0.5"/>
-<text font-family="sans-serif" font-size="12" fill="#3C3489" x="100" y="346" text-anchor="middle">UserEntity</text>
-<text font-family="sans-serif" font-size="12" fill="#3C3489" x="192" y="346" text-anchor="middle">JobEntity</text>
-<text font-family="sans-serif" font-size="12" fill="#3C3489" x="294" y="346" text-anchor="middle">ProposalEntity</text>
-<text font-family="sans-serif" font-size="12" fill="#3C3489" x="411" y="346" text-anchor="middle">ContractEntity</text>
-<text font-family="sans-serif" font-size="12" fill="#3C3489" x="528" y="346" text-anchor="middle">AppError</text>
+<rect x="55"  y="348" width="90"  height="26" rx="6" fill="#CECBF6" stroke="#534AB7" stroke-width="0.5"/>
+<rect x="155" y="348" width="80"  height="26" rx="6" fill="#CECBF6" stroke="#534AB7" stroke-width="0.5"/>
+<rect x="245" y="348" width="110" height="26" rx="6" fill="#CECBF6" stroke="#534AB7" stroke-width="0.5"/>
+<rect x="365" y="348" width="110" height="26" rx="6" fill="#CECBF6" stroke="#534AB7" stroke-width="0.5"/>
+<rect x="485" y="348" width="110" height="26" rx="6" fill="#CECBF6" stroke="#534AB7" stroke-width="0.5"/>
+<rect x="605" y="348" width="110" height="26" rx="6" fill="#CECBF6" stroke="#534AB7" stroke-width="0.5"/>
+<text font-family="sans-serif" font-size="11" fill="#3C3489" x="100" y="366" text-anchor="middle">UserEntity</text>
+<text font-family="sans-serif" font-size="11" fill="#3C3489" x="195" y="366" text-anchor="middle">JobEntity</text>
+<text font-family="sans-serif" font-size="11" fill="#3C3489" x="300" y="366" text-anchor="middle">ProposalEntity</text>
+<text font-family="sans-serif" font-size="11" fill="#3C3489" x="420" y="366" text-anchor="middle">PaymentEntity</text>
+<text font-family="sans-serif" font-size="11" fill="#3C3489" x="540" y="366" text-anchor="middle">MessageEntity</text>
+<text font-family="sans-serif" font-size="11" fill="#3C3489" x="660" y="366" text-anchor="middle">AppError</text>
 
-<path d="M340 420 L340 362" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+<path d="M430 440 L430 378" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
 
 <!-- Infrastructure Layer -->
-<rect x="40" y="390" width="600" height="90" rx="12" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
-<text font-family="sans-serif" font-weight="500" font-size="14" fill="#2C2C2A" x="340" y="418" text-anchor="middle">Infrastructure layer</text>
-<text font-family="sans-serif" font-size="12" fill="#5F5E5A" x="340" y="436" text-anchor="middle">repositories · SQLAlchemy models · PostgreSQL · Redis</text>
+<rect x="40" y="410" width="780" height="110" rx="12" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text font-family="sans-serif" font-weight="500" font-size="14" fill="#2C2C2A" x="430" y="438" text-anchor="middle">Infrastructure layer</text>
+<text font-family="sans-serif" font-size="12" fill="#5F5E5A" x="430" y="456" text-anchor="middle">repositories · models · PostgreSQL · Redis · Stripe · S3 · Celery · WebSocket</text>
 
-<rect x="60"  y="448" width="110" height="26" rx="6" fill="#D3D1C7" stroke="#5F5E5A" stroke-width="0.5"/>
-<rect x="182" y="448" width="100" height="26" rx="6" fill="#D3D1C7" stroke="#5F5E5A" stroke-width="0.5"/>
-<rect x="294" y="448" width="120" height="26" rx="6" fill="#D3D1C7" stroke="#5F5E5A" stroke-width="0.5"/>
-<rect x="426" y="448" width="90"  height="26" rx="6" fill="#D3D1C7" stroke="#5F5E5A" stroke-width="0.5"/>
-<rect x="528" y="448" width="60"  height="26" rx="6" fill="#D3D1C7" stroke="#5F5E5A" stroke-width="0.5"/>
-<text font-family="sans-serif" font-size="12" fill="#2C2C2A" x="115" y="466" text-anchor="middle">UserRepository</text>
-<text font-family="sans-serif" font-size="12" fill="#2C2C2A" x="232" y="466" text-anchor="middle">JobRepository</text>
-<text font-family="sans-serif" font-size="12" fill="#2C2C2A" x="354" y="466" text-anchor="middle">SQLAlchemy models</text>
-<text font-family="sans-serif" font-size="12" fill="#2C2C2A" x="471" y="466" text-anchor="middle">PostgreSQL</text>
-<text font-family="sans-serif" font-size="12" fill="#2C2C2A" x="558" y="466" text-anchor="middle">Redis</text>
+<rect x="55"  y="466" width="100" height="26" rx="6" fill="#D3D1C7" stroke="#5F5E5A" stroke-width="0.5"/>
+<rect x="165" y="466" width="100" height="26" rx="6" fill="#D3D1C7" stroke="#5F5E5A" stroke-width="0.5"/>
+<rect x="275" y="466" width="110" height="26" rx="6" fill="#D3D1C7" stroke="#5F5E5A" stroke-width="0.5"/>
+<rect x="395" y="466" width="70"  height="26" rx="6" fill="#D3D1C7" stroke="#5F5E5A" stroke-width="0.5"/>
+<rect x="475" y="466" width="70"  height="26" rx="6" fill="#D3D1C7" stroke="#5F5E5A" stroke-width="0.5"/>
+<rect x="555" y="466" width="70"  height="26" rx="6" fill="#D3D1C7" stroke="#5F5E5A" stroke-width="0.5"/>
+<rect x="635" y="466" width="70"  height="26" rx="6" fill="#D3D1C7" stroke="#5F5E5A" stroke-width="0.5"/>
+<rect x="715" y="466" width="80"  height="26" rx="6" fill="#D3D1C7" stroke="#5F5E5A" stroke-width="0.5"/>
+<text font-family="sans-serif" font-size="11" fill="#2C2C2A" x="105" y="484" text-anchor="middle">UserRepo</text>
+<text font-family="sans-serif" font-size="11" fill="#2C2C2A" x="215" y="484" text-anchor="middle">PaymentRepo</text>
+<text font-family="sans-serif" font-size="11" fill="#2C2C2A" x="330" y="484" text-anchor="middle">SA models</text>
+<text font-family="sans-serif" font-size="11" fill="#2C2C2A" x="430" y="484" text-anchor="middle">Postgres</text>
+<text font-family="sans-serif" font-size="11" fill="#2C2C2A" x="510" y="484" text-anchor="middle">Redis</text>
+<text font-family="sans-serif" font-size="11" fill="#2C2C2A" x="590" y="484" text-anchor="middle">Stripe</text>
+<text font-family="sans-serif" font-size="11" fill="#2C2C2A" x="670" y="484" text-anchor="middle">S3/MinIO</text>
+<text font-family="sans-serif" font-size="11" fill="#2C2C2A" x="755" y="484" text-anchor="middle">Celery/WS</text>
 
-<text font-family="sans-serif" font-size="11" fill="#888" x="340" y="500" text-anchor="middle">Dependency rule: API → Application → Domain ← Infrastructure (implements interfaces)</text>
+<text font-family="sans-serif" font-size="11" fill="#888" x="430" y="540" text-anchor="middle">Dependency rule: API → Application → Domain ← Infrastructure (implements interfaces)</text>
 </svg>

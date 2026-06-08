@@ -10,7 +10,11 @@
     {"key": "job_id", "value": ""},
     {"key": "proposal_id", "value": ""},
     {"key": "contract_id", "value": ""},
-    {"key": "user_id", "value": ""}
+    {"key": "user_id", "value": ""},
+    {"key": "payment_id", "value": ""},
+    {"key": "message_id", "value": ""},
+    {"key": "notification_id", "value": ""},
+    {"key": "skill_id", "value": ""}
   ],
   "item": [
     {
@@ -49,7 +53,8 @@
                 "exec": [
                   "var data = pm.response.json();",
                   "pm.collectionVariables.set('access_token', data.access_token);",
-                  "pm.collectionVariables.set('refresh_token', data.refresh_token);"
+                  "pm.collectionVariables.set('refresh_token', data.refresh_token);",
+                  "pm.collectionVariables.set('user_id', data.user_id);"
                 ]
               }
             }
@@ -70,6 +75,21 @@
             "method": "POST",
             "url": "{{base_url}}/api/v1/auth/refresh",
             "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"refresh_token\": \"{{refresh_token}}\"}"
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/auth/logout",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{access_token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\"refresh_token\": \"{{refresh_token}}\"}"
@@ -103,6 +123,77 @@
               "raw": "{\"full_name\": \"Ali Updated\", \"bio\": \"Looking for great developers\"}"
             }
           }
+        },
+        {
+          "name": "Upload Avatar",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/users/me/avatar",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{"key": "file", "type": "file", "src": ""}]
+            }
+          }
+        },
+        {
+          "name": "Upload Portfolio",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/users/me/portfolio",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{"key": "files", "type": "file", "src": ""}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Skills",
+      "item": [
+        {
+          "name": "Add Skills",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var data = pm.response.json();",
+                  "if (data.length > 0) pm.collectionVariables.set('skill_id', data[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/users/me/skills",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{access_token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"skills\": [\"Python\", \"FastAPI\", \"PostgreSQL\"]}"
+            }
+          }
+        },
+        {
+          "name": "Get My Skills",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/users/me/skills",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+          }
+        },
+        {
+          "name": "Remove Skill",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/v1/users/me/skills/{{skill_id}}",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+          }
         }
       ]
     },
@@ -131,7 +222,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"title\": \"Build a REST API\", \"description\": \"Need a FastAPI developer for a freelance platform\", \"budget\": 500}"
+              "raw": "{\"title\": \"Build a REST API\", \"description\": \"Need a FastAPI developer for a freelance platform\", \"budget\": 500, \"required_skills\": [\"Python\", \"FastAPI\"]}"
             }
           }
         },
@@ -146,7 +237,9 @@
                 {"key": "page_size", "value": "10"},
                 {"key": "status", "value": "open", "disabled": true},
                 {"key": "min_budget", "value": "100", "disabled": true},
-                {"key": "max_budget", "value": "1000", "disabled": true}
+                {"key": "max_budget", "value": "1000", "disabled": true},
+                {"key": "skill", "value": "Python", "disabled": true},
+                {"key": "search", "value": "FastAPI", "disabled": true}
               ]
             },
             "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
@@ -224,6 +317,21 @@
               "raw": "{\"status\": \"accepted\"}"
             }
           }
+        },
+        {
+          "name": "Reject Proposal",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/v1/proposals/{{proposal_id}}",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{access_token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"status\": \"rejected\"}"
+            }
+          }
         }
       ]
     },
@@ -251,6 +359,153 @@
               "mode": "raw",
               "raw": "{\"new_status\": \"completed\"}"
             }
+          }
+        },
+        {
+          "name": "Cancel Contract",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/v1/contracts/{{contract_id}}/status",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{access_token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"new_status\": \"cancelled\"}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Create Payment (Escrow)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var data = pm.response.json();",
+                  "pm.collectionVariables.set('payment_id', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/payments",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{access_token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"contract_id\": \"{{contract_id}}\", \"amount\": 450}"
+            }
+          }
+        },
+        {
+          "name": "Release Payment",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/payments/{{payment_id}}/release",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+          }
+        },
+        {
+          "name": "Refund Payment",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/payments/{{payment_id}}/refund",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "item": [
+        {
+          "name": "Send Message",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var data = pm.response.json();",
+                  "pm.collectionVariables.set('message_id', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/messages",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{access_token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"receiver_id\": \"{{user_id}}\", \"contract_id\": \"{{contract_id}}\", \"content\": \"Hello, when can you start?\"}"
+            }
+          }
+        },
+        {
+          "name": "Get Conversation",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/messages/conversations/{{user_id}}",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+          }
+        },
+        {
+          "name": "Get Unread Count",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/messages/unread-count",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Get Notifications",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var data = pm.response.json();",
+                  "if (data.items && data.items.length > 0) pm.collectionVariables.set('notification_id', data.items[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/notifications?page=1&page_size=20",
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "page_size", "value": "20"}
+              ]
+            },
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+          }
+        },
+        {
+          "name": "Mark Notification as Read",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/v1/notifications/{{notification_id}}/read",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
           }
         }
       ]
