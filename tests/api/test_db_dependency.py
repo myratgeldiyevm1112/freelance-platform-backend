@@ -13,16 +13,13 @@ async def test_get_db_commit():
     mock_cm.__aexit__.return_value = None
 
     with patch("app.api.dependencies.db.async_session_maker", return_value=mock_cm):
-
         gen = get_db()
-        session = await gen.__anext__()
+        session = await anext(gen)
 
         assert session == mock_session
 
-        try:
-            await gen.__anext__()
-        except StopAsyncIteration:
-            pass
+        with pytest.raises(StopAsyncIteration):
+            await anext(gen)
 
         mock_session.commit.assert_awaited_once()
         mock_session.rollback.assert_not_called()
@@ -34,18 +31,15 @@ async def test_get_db_rollback():
 
     mock_cm = AsyncMock()
     mock_cm.__aenter__.return_value = mock_session
+    mock_cm.__aexit__.return_value = None
 
-    # 💥 важно: заставляем session.commit упасть
-    mock_session.commit.side_effect = Exception("DB error")
+    mock_session.commit.side_effect = ValueError("DB error")
 
     with patch("app.api.dependencies.db.async_session_maker", return_value=mock_cm):
-
         gen = get_db()
-        await gen.__anext__()
+        await anext(gen)
 
-        try:
-            await gen.__anext__()
-        except Exception:
-            pass
+        with pytest.raises(ValueError, match="DB error"):
+            await anext(gen)
 
         mock_session.rollback.assert_awaited_once()
