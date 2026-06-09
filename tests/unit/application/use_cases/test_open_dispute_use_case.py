@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import AsyncMock
 
 import pytest
@@ -25,7 +25,7 @@ def make_user(user_id):
         full_name="Test User",
         role=UserRole.CLIENT,
         is_active=True,
-        created_at=datetime.utcnow(),
+        created_at=datetime.now(timezone.utc),
     )
 
 
@@ -38,7 +38,7 @@ def make_contract(client_id, freelancer_id, status=ContractStatus.ACTIVE):
         freelancer_id=freelancer_id,
         agreed_rate=100.0,
         status=status,
-        created_at=datetime.utcnow(),
+        created_at=datetime.now(timezone.utc),
     )
 
 
@@ -118,8 +118,8 @@ async def test_open_dispute_already_exists():
         opened_by=client_id,
         reason="Old dispute",
         status=DisputeStatus.OPEN,
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow(),
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc),
     )
 
     contract_repo.get_by_id.return_value = contract
@@ -150,8 +150,8 @@ async def test_open_dispute_success():
         opened_by=client_id,
         reason="Problem",
         status=DisputeStatus.OPEN,
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow(),
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc),
     )
 
     contract_repo.get_by_id.return_value = contract

@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import AsyncMock
 
 import pytest
@@ -22,7 +22,7 @@ async def test_get_contract_success():
         freelancer_id=uuid.uuid4(),
         agreed_rate=100.0,
         status=ContractStatus.ACTIVE,
-        created_at=datetime.utcnow(),
+        created_at=datetime.now(timezone.utc)
     )
 
     repo = AsyncMock()
