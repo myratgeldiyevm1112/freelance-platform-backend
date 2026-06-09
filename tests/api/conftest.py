@@ -69,3 +69,16 @@ async def client(db_session, mock_redis):
         yield ac
 
     app.dependency_overrides.clear()
+
+async def register_and_login(client, email: str, role: str) -> str:
+    await client.post("/api/v1/auth/register", json={
+        "email": email,
+        "password": "password123",
+        "full_name": "Test User",
+        "role": role
+    })
+    response = await client.post("/api/v1/auth/login", json={
+        "email": email,
+        "password": "password123"
+    })
+    return response.json()["access_token"]

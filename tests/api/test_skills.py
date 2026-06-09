@@ -1,18 +1,5 @@
 import pytest
-
-
-async def register_and_login(client, email, role):
-    await client.post("/api/v1/auth/register", json={
-        "email": email,
-        "password": "password123",
-        "full_name": "Test User",
-        "role": role
-    })
-    response = await client.post("/api/v1/auth/login", json={
-        "email": email,
-        "password": "password123"
-    })
-    return response.json()["access_token"]
+from tests.api.conftest import register_and_login
 
 
 # --- Skills endpoints ---

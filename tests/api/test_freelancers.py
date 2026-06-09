@@ -1,16 +1,5 @@
 import pytest
-
-
-async def register_and_login(client, email, role):
-    await client.post("/api/v1/auth/register", json={
-        "email": email, "password": "password123",
-        "full_name": "Test User", "role": role,
-    })
-    r = await client.post("/api/v1/auth/login", json={
-        "email": email, "password": "password123",
-    })
-    return r.json()["access_token"]
-
+from tests.api.conftest import register_and_login
 
 async def get_user_id(client, token):
     r = await client.get("/api/v1/users/me", headers={"authorization": f"Bearer {token}"})

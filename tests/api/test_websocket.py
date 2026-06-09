@@ -5,20 +5,9 @@ from fastapi.testclient import TestClient
 from app.main import app
 from app.api.dependencies.db import get_db
 from app.api.dependencies.cache import get_redis
-
+from tests.api.conftest import register_and_login
 
 # --- Хелперы ---
-
-async def register_and_login(client, email, role):
-    await client.post("/api/v1/auth/register", json={
-        "email": email, "password": "password123",
-        "full_name": "Test User", "role": role,
-    })
-    r = await client.post("/api/v1/auth/login", json={
-        "email": email, "password": "password123",
-    })
-    return r.json()["access_token"]
-
 
 async def get_user_id(client, token):
     r = await client.get(
