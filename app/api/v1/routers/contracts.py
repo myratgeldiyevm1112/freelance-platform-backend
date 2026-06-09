@@ -20,7 +20,11 @@ async def get_contract(
     db: AsyncSession = Depends(get_db),
 ):
     use_case = GetContract(ContractRepository(db))
-    return await use_case.execute(contract_id)
+    return await use_case.execute(
+        contract_id, 
+        current_user_id=current_user.id,
+        is_admin=current_user.is_admin
+    )
 
 
 @router.patch("/{contract_id}/status", summary="Update contract status", description="Change contract status to completed or cancelled.", response_model=ContractResponse)
