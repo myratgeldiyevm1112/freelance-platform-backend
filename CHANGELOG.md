@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.0] - 2025-06-09
+
+### Added
+
+#### 🔍 Freelancer Search
+- Public freelancer profiles with skills, rating and portfolio
+- Filter by skill, rating, availability
+- `GET /api/v1/freelancers` — paginated search
+- `GET /api/v1/freelancers/{freelancer_id}` — public profile
+
+#### ⚖️ Dispute System
+- `Dispute` model with open/resolve lifecycle
+- `POST /api/v1/disputes` — open dispute on contract
+- `PATCH /api/v1/disputes/{dispute_id}/resolve` — resolve (admin)
+- `GET /api/v1/disputes/admin` — list all disputes (admin)
+
+#### 🛡️ Admin Panel
+- Ban/unban users — `PATCH /api/v1/admin/users/{user_id}/ban|unban`
+- List and delete job postings — moderation
+- Platform statistics — `GET /api/v1/admin/stats`
+
+### Fixed
+- BOLA vulnerability on contract access (object-level authorization)
+- Auth returns 401 instead of 400 on missing refresh token
+- Payment status converted to enum
+
+### Refactored
+- Test structure reorganized into api/integration/unit hierarchy
+- Coverage boosted to 92% (264 tests)
+- Deprecated `utcnow` replaced with `datetime.now(timezone.utc)`
+- Secrets moved to .env
+
+### Stats
+- **264 tests** — unit + integration
+- **Coverage: 92%**
+
+---
+
 ## [1.2.0] - 2025-06-08
 
 ### Added

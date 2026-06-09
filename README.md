@@ -5,8 +5,8 @@
 ![CI](https://github.com/myratgeldiyevm1112/freelance-platform-backend/actions/workflows/ci.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.12-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.136-green)
-![Coverage](https://img.shields.io/badge/coverage-85%25-brightgreen)
-![Tests](https://img.shields.io/badge/tests-105-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-92%25-brightgreen)
+![Tests](https://img.shields.io/badge/tests-264-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
 **Live API:** https://freelance-platform-backend-gkyj.onrender.com/docs
@@ -24,9 +24,11 @@ Register → Post Job → Submit Proposal → Accept → Contract → Pay (Escro
 Built as a portfolio project demonstrating:
 - **Clean Architecture** with clear separation of concerns
 - **Async Python** with FastAPI + SQLAlchemy
-- **Professional testing** — 105 tests, 85%+ coverage
+- **Professional testing** — 264 tests, 92%+ coverage
 - **CI/CD** with GitHub Actions + Render deployment
 - **Production features** — Redis caching, rate limiting, Celery, WebSockets, S3, Stripe payments
+- **Security** — JWT auth, BOLA protection, role-based access control (admin/client/freelancer)
+- **Moderation** — Admin panel with dispute resolution and content moderation
 
 ---
 
@@ -45,7 +47,7 @@ Built as a portfolio project demonstrating:
 | Payments | Stripe (escrow, transfers, refunds) |
 | Validation | Pydantic v2 |
 | Rate Limiting | SlowAPI |
-| Testing | Pytest + pytest-asyncio (105 tests) |
+| Testing | Pytest + pytest-asyncio (264 tests) |
 | Linting | Ruff |
 | CI/CD | GitHub Actions + Render |
 | Containerization | Docker + Docker Compose |
@@ -109,6 +111,23 @@ Built as a portfolio project demonstrating:
 - Avatar upload (JPG/PNG, max 5MB)
 - Portfolio upload (JPG/PNG/PDF, max 5MB per file)
 - Stored in S3/MinIO, URL saved to profile
+
+### Freelancer Search
+- Search freelancers by skill, rating and availability
+- Public freelancer profiles with portfolio and skills
+- `GET /api/v1/freelancers` — paginated search with filters
+- `GET /api/v1/freelancers/{user_id}` — public profile
+
+### Disputes
+- Open disputes on active contracts
+- Admin can resolve disputes
+- Full dispute lifecycle management
+
+### Admin Panel
+- Ban / unban users
+- Delete job postings (moderation)
+- Platform statistics dashboard
+- Admin-only endpoints with role check
 
 ### WebSockets
 - Real-time notifications and chat messages
@@ -202,6 +221,29 @@ infrastructure/  ← DB models, repositories, Redis, S3, Celery, Stripe, WebSock
 | GET | `/api/v1/reviews/user/{user_id}` | Get user reviews |
 | GET | `/api/v1/reviews/user/{user_id}/rating` | Get user rating |
 
+### Freelancers
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/v1/freelancers` | Search freelancers (paginated, filterable) |
+| GET | `/api/v1/freelancers/{user_id}` | Get public freelancer profile |
+
+### Disputes
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/v1/disputes` | Open dispute on contract |
+| PATCH | `/api/v1/disputes/{dispute_id}/resolve` | Resolve dispute (admin) |
+| GET | `/api/v1/disputes/admin` | List disputes (admin) |
+
+### Admin
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/v1/admin/users` | List all users (admin) |
+| PATCH | `/api/v1/admin/users/{user_id}/ban` | Ban user |
+| PATCH | `/api/v1/admin/users/{user_id}/unban` | Unban user |
+| GET | `/api/v1/admin/jobs` | List all jobs (admin) |
+| DELETE | `/api/v1/admin/jobs/{job_id}` | Delete job (moderation) |
+| GET | `/api/v1/admin/stats` | Platform statistics |
+
 ### Real-time
 | Method | Endpoint | Description |
 |---|---|---|
@@ -260,31 +302,54 @@ pytest tests/ -v --cov=app --cov-report=term-missing
 pytest tests/unit/ -v
 ```
 
-**105 tests** — unit + integration, **85%+ coverage**
+**264 tests** — unit + integration, **92%+ coverage**
 
 ---
 
 ## 📄 Environment Variables
 
-```env
+````env
+# App
 APP_ENV=development
 DEBUG=True
-DATABASE_URL=postgresql+asyncpg://user:password@localhost:5433/freelance_db
+
+# Database
+DATABASE_URL=postgresql+asyncpg://postgres:password@localhost:5433/freelance_db
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=password
+POSTGRES_DB=freelance_db
+
+# Redis
 REDIS_URL=redis://localhost:6380
-SECRET_KEY=your-secret-key
+CELERY_BROKER_URL=redis://localhost:6380/1
+
+# Auth
+SECRET_KEY=your-super-secret-key-change-in-production
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 REFRESH_TOKEN_EXPIRE_DAYS=7
+
+# CORS
 ALLOWED_ORIGINS=["http://localhost:3000"]
-CELERY_BROKER_URL=redis://localhost:6380/0
-AWS_ACCESS_KEY=your-access-key
-AWS_SECRET_KEY=your-secret-key
+
+# Mail
+MAIL_HOST=localhost
+MAIL_PORT=1025
+MAIL_FROM=noreply@freelance.com
+
+# Stripe
+STRIPE_SECRET_KEY=sk_test_your_key_here
+STRIPE_WEBHOOK_SECRET=whsec_your_secret_here
+
+# MinIO / S3
+AWS_ACCESS_KEY_ID=minioadmin
+AWS_SECRET_ACCESS_KEY=minioadmin
+AWS_REGION=us-east-1
 S3_BUCKET=freelance-platform
 S3_ENDPOINT_URL=http://localhost:9000
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
+MINIO_ROOT_USER=minioadmin
+MINIO_ROOT_PASSWORD=minioadmin
 ```
-
 ---
 
 ## 👤 Author

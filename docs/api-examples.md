@@ -94,3 +94,46 @@ curl -X POST https://freelance-platform-backend-gkyj.onrender.com/api/v1/reviews
 curl https://freelance-platform-backend-gkyj.onrender.com/api/v1/reviews/user/USER_ID/rating \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
+
+## Freelancer Search
+### Search freelancers
+```bash
+curl "https://freelance-platform-backend-gkyj.onrender.com/api/v1/freelancers/?page=1&page_size=10" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+### Get public freelancer profile
+```bash
+curl https://freelance-platform-backend-gkyj.onrender.com/api/v1/freelancers/FREELANCER_ID \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+## Disputes
+### Open dispute
+```bash
+curl -X POST https://freelance-platform-backend-gkyj.onrender.com/api/v1/disputes \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "contract_id": "CONTRACT_ID",
+    "reason": "Work was not delivered as agreed"
+  }'
+```
+### Resolve dispute (admin)
+```bash
+curl -X PATCH https://freelance-platform-backend-gkyj.onrender.com/api/v1/disputes/DISPUTE_ID/resolve \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"resolution": "Refund issued to client"}'
+```
+
+## Admin
+### Ban user
+```bash
+curl -X PATCH https://freelance-platform-backend-gkyj.onrender.com/api/v1/admin/users/USER_ID/ban \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+### Get platform stats
+```bash
+curl https://freelance-platform-backend-gkyj.onrender.com/api/v1/admin/stats \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```

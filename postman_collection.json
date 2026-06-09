@@ -4,17 +4,58 @@
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    {"key": "base_url", "value": "http://localhost:8000"},
-    {"key": "access_token", "value": ""},
-    {"key": "refresh_token", "value": ""},
-    {"key": "job_id", "value": ""},
-    {"key": "proposal_id", "value": ""},
-    {"key": "contract_id", "value": ""},
-    {"key": "user_id", "value": ""},
-    {"key": "payment_id", "value": ""},
-    {"key": "message_id", "value": ""},
-    {"key": "notification_id", "value": ""},
-    {"key": "skill_id", "value": ""}
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "refresh_token",
+      "value": ""
+    },
+    {
+      "key": "job_id",
+      "value": ""
+    },
+    {
+      "key": "proposal_id",
+      "value": ""
+    },
+    {
+      "key": "contract_id",
+      "value": ""
+    },
+    {
+      "key": "user_id",
+      "value": ""
+    },
+    {
+      "key": "payment_id",
+      "value": ""
+    },
+    {
+      "key": "message_id",
+      "value": ""
+    },
+    {
+      "key": "notification_id",
+      "value": ""
+    },
+    {
+      "key": "skill_id",
+      "value": ""
+    },
+    {
+      "key": "dispute_id",
+      "value": ""
+    },
+    {
+      "key": "freelancer_id",
+      "value": ""
+    }
   ],
   "item": [
     {
@@ -25,7 +66,12 @@
           "request": {
             "method": "POST",
             "url": "{{base_url}}/api/v1/auth/register",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\"email\": \"client@test.com\", \"password\": \"password123\", \"full_name\": \"Ali Client\", \"role\": \"client\"}"
@@ -37,7 +83,12 @@
           "request": {
             "method": "POST",
             "url": "{{base_url}}/api/v1/auth/register",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\"email\": \"freelancer@test.com\", \"password\": \"password123\", \"full_name\": \"Mukam Freelancer\", \"role\": \"freelancer\"}"
@@ -62,7 +113,12 @@
           "request": {
             "method": "POST",
             "url": "{{base_url}}/api/v1/auth/login",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\"email\": \"client@test.com\", \"password\": \"password123\"}"
@@ -74,7 +130,12 @@
           "request": {
             "method": "POST",
             "url": "{{base_url}}/api/v1/auth/refresh",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\"refresh_token\": \"{{refresh_token}}\"}"
@@ -87,8 +148,14 @@
             "method": "POST",
             "url": "{{base_url}}/api/v1/auth/logout",
             "header": [
-              {"key": "Authorization", "value": "Bearer {{access_token}}"},
-              {"key": "Content-Type", "value": "application/json"}
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -106,7 +173,12 @@
           "request": {
             "method": "GET",
             "url": "{{base_url}}/api/v1/users/me",
-            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
           }
         },
         {
@@ -115,8 +187,14 @@
             "method": "PATCH",
             "url": "{{base_url}}/api/v1/users/me",
             "header": [
-              {"key": "Authorization", "value": "Bearer {{access_token}}"},
-              {"key": "Content-Type", "value": "application/json"}
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -129,10 +207,21 @@
           "request": {
             "method": "POST",
             "url": "{{base_url}}/api/v1/users/me/avatar",
-            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
             "body": {
               "mode": "formdata",
-              "formdata": [{"key": "file", "type": "file", "src": ""}]
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
             }
           }
         },
@@ -141,10 +230,21 @@
           "request": {
             "method": "POST",
             "url": "{{base_url}}/api/v1/users/me/portfolio",
-            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
             "body": {
               "mode": "formdata",
-              "formdata": [{"key": "files", "type": "file", "src": ""}]
+              "formdata": [
+                {
+                  "key": "files",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
             }
           }
         }
@@ -170,8 +270,14 @@
             "method": "POST",
             "url": "{{base_url}}/api/v1/users/me/skills",
             "header": [
-              {"key": "Authorization", "value": "Bearer {{access_token}}"},
-              {"key": "Content-Type", "value": "application/json"}
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -184,7 +290,12 @@
           "request": {
             "method": "GET",
             "url": "{{base_url}}/api/v1/users/me/skills",
-            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
           }
         },
         {
@@ -192,7 +303,12 @@
           "request": {
             "method": "DELETE",
             "url": "{{base_url}}/api/v1/users/me/skills/{{skill_id}}",
-            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
           }
         }
       ]
@@ -217,8 +333,14 @@
             "method": "POST",
             "url": "{{base_url}}/api/v1/jobs/",
             "header": [
-              {"key": "Authorization", "value": "Bearer {{access_token}}"},
-              {"key": "Content-Type", "value": "application/json"}
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -233,16 +355,47 @@
             "url": {
               "raw": "{{base_url}}/api/v1/jobs/?page=1&page_size=10",
               "query": [
-                {"key": "page", "value": "1"},
-                {"key": "page_size", "value": "10"},
-                {"key": "status", "value": "open", "disabled": true},
-                {"key": "min_budget", "value": "100", "disabled": true},
-                {"key": "max_budget", "value": "1000", "disabled": true},
-                {"key": "skill", "value": "Python", "disabled": true},
-                {"key": "search", "value": "FastAPI", "disabled": true}
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "open",
+                  "disabled": true
+                },
+                {
+                  "key": "min_budget",
+                  "value": "100",
+                  "disabled": true
+                },
+                {
+                  "key": "max_budget",
+                  "value": "1000",
+                  "disabled": true
+                },
+                {
+                  "key": "skill",
+                  "value": "Python",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "FastAPI",
+                  "disabled": true
+                }
               ]
             },
-            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
           }
         },
         {
@@ -250,7 +403,12 @@
           "request": {
             "method": "GET",
             "url": "{{base_url}}/api/v1/jobs/{{job_id}}",
-            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
           }
         }
       ]
@@ -275,8 +433,14 @@
             "method": "POST",
             "url": "{{base_url}}/api/v1/proposals/jobs/{{job_id}}/proposals",
             "header": [
-              {"key": "Authorization", "value": "Bearer {{access_token}}"},
-              {"key": "Content-Type", "value": "application/json"}
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -289,7 +453,12 @@
           "request": {
             "method": "GET",
             "url": "{{base_url}}/api/v1/proposals/jobs/{{job_id}}/proposals",
-            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
           }
         },
         {
@@ -309,8 +478,14 @@
             "method": "PATCH",
             "url": "{{base_url}}/api/v1/proposals/{{proposal_id}}",
             "header": [
-              {"key": "Authorization", "value": "Bearer {{access_token}}"},
-              {"key": "Content-Type", "value": "application/json"}
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -324,8 +499,14 @@
             "method": "PATCH",
             "url": "{{base_url}}/api/v1/proposals/{{proposal_id}}",
             "header": [
-              {"key": "Authorization", "value": "Bearer {{access_token}}"},
-              {"key": "Content-Type", "value": "application/json"}
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -343,7 +524,12 @@
           "request": {
             "method": "GET",
             "url": "{{base_url}}/api/v1/contracts/{{contract_id}}",
-            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
           }
         },
         {
@@ -352,8 +538,14 @@
             "method": "PATCH",
             "url": "{{base_url}}/api/v1/contracts/{{contract_id}}/status",
             "header": [
-              {"key": "Authorization", "value": "Bearer {{access_token}}"},
-              {"key": "Content-Type", "value": "application/json"}
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -367,8 +559,14 @@
             "method": "PATCH",
             "url": "{{base_url}}/api/v1/contracts/{{contract_id}}/status",
             "header": [
-              {"key": "Authorization", "value": "Bearer {{access_token}}"},
-              {"key": "Content-Type", "value": "application/json"}
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -398,8 +596,14 @@
             "method": "POST",
             "url": "{{base_url}}/api/v1/payments",
             "header": [
-              {"key": "Authorization", "value": "Bearer {{access_token}}"},
-              {"key": "Content-Type", "value": "application/json"}
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -412,7 +616,12 @@
           "request": {
             "method": "POST",
             "url": "{{base_url}}/api/v1/payments/{{payment_id}}/release",
-            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
           }
         },
         {
@@ -420,7 +629,12 @@
           "request": {
             "method": "POST",
             "url": "{{base_url}}/api/v1/payments/{{payment_id}}/refund",
-            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
           }
         }
       ]
@@ -445,8 +659,14 @@
             "method": "POST",
             "url": "{{base_url}}/api/v1/messages",
             "header": [
-              {"key": "Authorization", "value": "Bearer {{access_token}}"},
-              {"key": "Content-Type", "value": "application/json"}
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -459,7 +679,12 @@
           "request": {
             "method": "GET",
             "url": "{{base_url}}/api/v1/messages/conversations/{{user_id}}",
-            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
           }
         },
         {
@@ -467,7 +692,12 @@
           "request": {
             "method": "GET",
             "url": "{{base_url}}/api/v1/messages/unread-count",
-            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
           }
         }
       ]
@@ -493,11 +723,22 @@
             "url": {
               "raw": "{{base_url}}/api/v1/notifications?page=1&page_size=20",
               "query": [
-                {"key": "page", "value": "1"},
-                {"key": "page_size", "value": "20"}
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "20"
+                }
               ]
             },
-            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
           }
         },
         {
@@ -505,7 +746,12 @@
           "request": {
             "method": "PATCH",
             "url": "{{base_url}}/api/v1/notifications/{{notification_id}}/read",
-            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
           }
         }
       ]
@@ -519,8 +765,14 @@
             "method": "POST",
             "url": "{{base_url}}/api/v1/reviews/",
             "header": [
-              {"key": "Authorization", "value": "Bearer {{access_token}}"},
-              {"key": "Content-Type", "value": "application/json"}
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -533,7 +785,12 @@
           "request": {
             "method": "GET",
             "url": "{{base_url}}/api/v1/reviews/user/{{user_id}}",
-            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
           }
         },
         {
@@ -541,7 +798,219 @@
           "request": {
             "method": "GET",
             "url": "{{base_url}}/api/v1/reviews/user/{{user_id}}/rating",
-            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}]
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Freelancers",
+      "item": [
+        {
+          "name": "Search Freelancers",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/freelancers/?page=1&page_size=10",
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "skill",
+                  "value": "Python",
+                  "disabled": true
+                },
+                {
+                  "key": "min_rating",
+                  "value": "4",
+                  "disabled": true
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Get Freelancer Profile",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/freelancers/{{freelancer_id}}",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Disputes",
+      "item": [
+        {
+          "name": "Open Dispute",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var data = pm.response.json();",
+                  "pm.collectionVariables.set('dispute_id', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/disputes",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"contract_id\": \"{{contract_id}}\", \"reason\": \"Work was not delivered as agreed\"}"
+            }
+          }
+        },
+        {
+          "name": "List Disputes (Admin)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/disputes/admin",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Resolve Dispute (Admin)",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/v1/disputes/{{dispute_id}}/resolve",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"resolution\": \"Refund issued to client\"}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/admin/users",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Ban User",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/v1/admin/users/{{user_id}}/ban",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Unban User",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/v1/admin/users/{{user_id}}/unban",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "List Jobs (Admin)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/admin/jobs",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Delete Job (Admin)",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/v1/admin/jobs/{{job_id}}",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Platform Stats",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/admin/stats",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
           }
         }
       ]
