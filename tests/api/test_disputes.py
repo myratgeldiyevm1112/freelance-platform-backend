@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import AsyncMock, patch
 from tests.api.conftest import register_and_login
+from tests.api.test_admin import make_admin
 
 
 async def get_user_id(client, token):
@@ -136,3 +137,20 @@ async def test_resolve_dispute_non_admin(client):
     }, headers={"authorization": f"Bearer {client_token}"})
 
     assert r.status_code == 403
+
+@pytest.mark.asyncio
+async def test_resolve_dispute_not_found(client, db_session): 
+    admin_token = await register_and_login(client, "disp_404@test.com", "client")
+    
+    admin_id = await get_user_id(client, admin_token)
+    
+    await make_admin(db_session, admin_id)
+    
+    fake_dispute_id = "00000000-0000-0000-0000-000000000000"
+
+    r = await client.patch(f"/api/v1/disputes/{fake_dispute_id}/resolve", json={
+        "resolution": "refund",
+        "resolution_note": "Does not exist",
+    }, headers={"authorization": f"Bearer {admin_token}"})
+
+    assert r.status_code == 404

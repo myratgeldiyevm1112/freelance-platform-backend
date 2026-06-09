@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 from app.application.use_cases.refresh_token import RefreshToken
-from app.domain.exceptions import ValidationError, NotFoundError, ForbiddenError
+from app.domain.exceptions import ValidationError, NotFoundError, ForbiddenError, UnauthorizedError
 from app.application.dto.auth import TokenResponse
 
 @pytest.fixture
@@ -74,7 +74,7 @@ async def test_refresh_token_expired_or_missing_in_store(mock_decode, refresh_to
     mock_token_store.get.return_value = None  # Нет в кэше
 
     # Act & Assert
-    with pytest.raises(ValidationError, match="Refresh token expired or already used"):
+    with pytest.raises(UnauthorizedError):
         await refresh_token_use_case.execute("some_token")
 
 @pytest.mark.asyncio

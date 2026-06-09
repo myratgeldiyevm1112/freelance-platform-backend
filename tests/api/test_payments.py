@@ -116,6 +116,19 @@ async def test_create_payment_forbidden(client):
     assert r.status_code == 403
 
 
+@pytest.mark.asyncio
+async def test_create_payment_contract_not_found(client):
+    client_token = await register_and_login(client, "pay_404@test.com", "client")
+    fake_contract_id = "00000000-0000-0000-0000-000000000000"
+
+    r = await client.post(
+        f"/api/v1/payments/contracts/{fake_contract_id}",
+        json={"freelancer_id": "00000000-0000-0000-0000-000000000001"},
+        headers={"authorization": f"Bearer {client_token}"},
+    )
+
+    assert r.status_code == 404
+
 # ═══════════════════════════════════════════
 # Release payment
 # ═══════════════════════════════════════════

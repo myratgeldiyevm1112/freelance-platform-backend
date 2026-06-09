@@ -1,6 +1,6 @@
 import uuid
 import pytest
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, patch, ANY
 from app.main import app
 from app.api.dependencies.auth import get_current_user
 from app.api.dependencies.db import get_db
@@ -52,7 +52,11 @@ async def test_get_contract_success(mock_use_case_class, override_dependencies, 
     # Assert
     assert response.status_code == 200
     assert response.json()["id"] == str(contract_id)
-    mock_use_case.execute.assert_called_once_with(contract_id)
+    mock_use_case.execute.assert_called_once_with(
+        contract_id, 
+        current_user_id=ANY, 
+        is_admin=ANY
+    )
 
 @pytest.mark.asyncio
 @patch("app.api.v1.routers.contracts.UpdateContractStatus")

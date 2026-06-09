@@ -63,6 +63,18 @@ async def test_complete_contract_wrong_user(client):
     assert response.status_code in [403, 404]
 
 
+@pytest.mark.asyncio
+async def test_get_contract_forbidden_for_stranger(client):
+    _, _, contract_id = await create_active_contract(client)
+
+    stranger_token = await register_and_login(client, f"stranger_{uuid.uuid4()}@test.com", "client")
+
+    response = await client.get(
+        f"/api/v1/contracts/{contract_id}",
+        headers={"authorization": f"Bearer {stranger_token}"}
+    )
+    assert response.status_code in [403, 404]
+
 # ═══════════════════════════════════════════
 # Review Tests
 # ═══════════════════════════════════════════
