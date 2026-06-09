@@ -1,15 +1,12 @@
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from unittest.mock import AsyncMock
 from app.main import app
 from app.api.dependencies.db import get_db
 from app.api.dependencies.cache import get_redis
-from app.infrastructure.database.base import Base
-from app.infrastructure.database.models import User, Job, Proposal, Contract, Review  # noqa
-
-TEST_DATABASE_URL = "postgresql+asyncpg://postgres:password@localhost:5433/freelance_test_db"
+from tests.api.conftest import engine, db_session
+from tests.api.conftest import engine, db_session  # noqa: F401
 
 REGISTER_URL = "/api/v1/auth/register"
 LOGIN_URL = "/api/v1/auth/login"
@@ -20,23 +17,6 @@ VALID_USER = {
     "full_name": "Rate Limit User",
     "role": "freelancer",
 }
-
-
-@pytest_asyncio.fixture(scope="function")
-async def engine():
-    _engine = create_async_engine(TEST_DATABASE_URL)
-    async with _engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
-    yield _engine
-    await _engine.dispose()
-
-
-@pytest_asyncio.fixture(scope="function")
-async def db_session(engine):
-    session_maker = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
-    async with session_maker() as session:
-        yield session
 
 
 @pytest_asyncio.fixture(scope="function")
