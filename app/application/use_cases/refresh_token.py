@@ -1,7 +1,7 @@
 from app.application.dto.auth import TokenResponse
 from app.application.interfaces.user_repository import IUserRepository
 from app.core.security import decode_token, create_access_token, create_refresh_token
-from app.domain.exceptions import ValidationError, NotFoundError, ForbiddenError
+from app.domain.exceptions import ValidationError, NotFoundError, ForbiddenError, UnauthorizedError
 from app.infrastructure.cache.token_store import TokenStore
 
 
@@ -23,7 +23,7 @@ class RefreshToken:
 
         stored_token = await self.token_store.get(user_id)
         if not stored_token or stored_token != refresh_token:
-            raise ValidationError("Refresh token expired or already used")
+            raise UnauthorizedError("Refresh token expired or already used")
 
         user = await self.user_repo.get_by_id(user_id)
         if not user:
