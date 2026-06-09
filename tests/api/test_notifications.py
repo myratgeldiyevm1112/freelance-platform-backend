@@ -1,7 +1,6 @@
 import pytest
 from unittest.mock import AsyncMock, patch
 from tests.api.conftest import register_and_login
-from tests.api.conftest import get_user_id
 
 
 async def create_notification(client, client_token, freelancer_token):

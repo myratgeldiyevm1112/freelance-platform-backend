@@ -1,5 +1,4 @@
 # tests/api/conftest.py
-import pytest
 import pytest_asyncio
 from unittest.mock import AsyncMock
 from httpx import AsyncClient, ASGITransport

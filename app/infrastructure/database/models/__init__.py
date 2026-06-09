@@ -9,4 +9,4 @@ from app.infrastructure.database.models.payment import Payment, PaymentStatus
 from app.infrastructure.database.models.notification import Notification, NotificationType
 from app.infrastructure.database.models.dispute import Dispute, DisputeStatus
 
-__all__ = ["Payment", "PaymentStatus", "User", "Job", "Proposal", "Contract", "Review", "Skill", "UserSkill", "Message", "Notification", "NotificationType"]
+__all__ = ["Payment", "PaymentStatus", "User", "Job", "Proposal", "Contract", "Review", "Skill", "UserSkill", "Message", "Notification", "NotificationType", "Dispute", "DisputeStatus"]

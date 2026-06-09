@@ -5,8 +5,6 @@ from unittest.mock import AsyncMock
 from app.main import app
 from app.api.dependencies.db import get_db
 from app.api.dependencies.cache import get_redis
-from tests.api.conftest import engine, db_session
-from tests.api.conftest import engine, db_session  # noqa: F401
 
 REGISTER_URL = "/api/v1/auth/register"
 LOGIN_URL = "/api/v1/auth/login"

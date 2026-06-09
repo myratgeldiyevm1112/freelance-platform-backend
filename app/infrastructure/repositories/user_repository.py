@@ -93,7 +93,7 @@ class UserRepository(IUserRepository):
 
         stmt = select(User).where(
             User.role == UserRole.FREELANCER,
-            User.is_active == True,
+            User.is_active,
         )
 
         if min_rate is not None:
