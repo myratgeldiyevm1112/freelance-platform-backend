@@ -135,3 +135,29 @@ async def test_duplicate_review_fails(client):
 
     r2 = await client.post("/api/v1/reviews/", json=payload, headers={"authorization": f"Bearer {client_token}"})
     assert r2.status_code in [400, 409]
+
+
+@pytest.mark.asyncio
+async def test_leave_review_as_freelancer_success(client):
+    client_token, freelancer_token, contract_id = await create_active_contract(client)
+
+    await client.patch(
+        f"/api/v1/contracts/{contract_id}/status",
+        json={"new_status": "completed"},
+        headers={"authorization": f"Bearer {client_token}"}
+    )
+
+    response = await client.post(
+        "/api/v1/reviews/",
+        json={
+            "contract_id": contract_id,
+            "rating": 5,
+            "comment": "Great client!"
+        },
+        headers={"authorization": f"Bearer {freelancer_token}"}
+    )
+    
+    assert response.status_code == 201
+    data = response.json()
+    assert data["rating"] == 5
+    assert data["comment"] == "Great client!"

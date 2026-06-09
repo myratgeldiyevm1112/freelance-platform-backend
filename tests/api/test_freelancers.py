@@ -1,10 +1,6 @@
 import pytest
 from tests.api.conftest import register_and_login
-
-async def get_user_id(client, token):
-    r = await client.get("/api/v1/users/me", headers={"authorization": f"Bearer {token}"})
-    return r.json()["id"]
-
+from tests.api.conftest import get_user_id
 
 # ═══════════════════════════════════════════
 # Search freelancers
@@ -118,3 +114,51 @@ async def test_get_freelancer_profile_not_found(client):
 async def test_freelancers_unauthorized(client):
     r = await client.get("/api/v1/freelancers/")
     assert r.status_code == 401
+
+
+# ═══════════════════════════════════════════
+# Update profile PATCH /users/me
+# ═══════════════════════════════════════════
+
+@pytest.mark.asyncio
+async def test_update_profile_success(client):
+    token = await register_and_login(client, "upd_freelancer@test.com", "freelancer")
+
+    r = await client.patch("/api/v1/users/me", json={
+        "bio": "Experienced Python developer",
+        "hourly_rate": 75.0
+    }, headers={"authorization": f"Bearer {token}"})
+    
+    assert r.status_code == 200
+    user_id = r.json()["id"]
+
+    profile_response = await client.get(
+        f"/api/v1/freelancers/{user_id}", 
+        headers={"authorization": f"Bearer {token}"}
+    )
+    
+    assert profile_response.status_code == 200
+    profile_data = profile_response.json()
+    
+    assert profile_data["bio"] == "Experienced Python developer"
+    assert float(profile_data["hourly_rate"]) == 75.0
+
+
+@pytest.mark.asyncio
+async def test_update_profile_unauthorized(client):
+    r = await client.patch("/api/v1/users/me", json={"bio": "Hacker"})
+    assert r.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_update_profile_cannot_change_role(client):
+    token = await register_and_login(client, "upd_role@test.com", "freelancer")
+
+    r = await client.patch("/api/v1/users/me", json={
+        "role": "client"
+    }, headers={"authorization": f"Bearer {token}"})
+
+    if r.status_code == 200:
+        assert r.json()["role"] == "freelancer"
+    else:
+        assert r.status_code == 422

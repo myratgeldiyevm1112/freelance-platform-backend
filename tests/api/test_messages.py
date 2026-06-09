@@ -1,11 +1,7 @@
 import pytest
 from unittest.mock import AsyncMock, patch
 from tests.api.conftest import register_and_login
-
-
-async def get_user_id(client, token):
-    r = await client.get("/api/v1/users/me", headers={"authorization": f"Bearer {token}"})
-    return r.json()["id"]
+from tests.api.conftest import get_user_id
 
 
 # ═══════════════════════════════════════════

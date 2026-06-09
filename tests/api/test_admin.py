@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy import select
 from app.infrastructure.database.models.user import User
-
+from tests.api.conftest import get_user_id
 
 async def register_and_login(client, email, role):
     await client.post("/api/v1/auth/register", json={
@@ -13,10 +13,6 @@ async def register_and_login(client, email, role):
     })
     return r.json()["access_token"]
 
-
-async def get_user_id(client, token):
-    r = await client.get("/api/v1/users/me", headers={"authorization": f"Bearer {token}"})
-    return r.json()["id"]
 
 
 async def make_admin(db_session, user_id):

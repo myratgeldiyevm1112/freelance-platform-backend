@@ -82,3 +82,7 @@ async def register_and_login(client, email: str, role: str) -> str:
         "password": "password123"
     })
     return response.json()["access_token"]
+
+async def get_user_id(client, token: str) -> str:
+    r = await client.get("/api/v1/users/me", headers={"authorization": f"Bearer {token}"})
+    return r.json()["id"]

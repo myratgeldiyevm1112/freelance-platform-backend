@@ -76,3 +76,26 @@ async def test_get_job_not_found(client):
         headers={"authorization": f"Bearer {token}"}
     )
     assert response.status_code == 404
+
+@pytest.mark.asyncio
+async def test_get_jobs_pagination(client):
+    token = await register_and_login(client, "page_client@test.com", "client")
+
+    # Создаём 5 джобов
+    for i in range(5):
+        await client.post(
+            "/api/v1/jobs/",
+            json={"title": f"Job {i}", "description": "Desc desc desc", "budget": 500},
+            headers={"authorization": f"Bearer {token}"}
+        )
+
+    response = await client.get(
+        "/api/v1/jobs/?page=1&page_size=2",
+        headers={"authorization": f"Bearer {token}"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["total"] == 5
+    assert len(data["items"]) == 2
+    assert data["pages"] == 3

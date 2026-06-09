@@ -6,15 +6,9 @@ from app.main import app
 from app.api.dependencies.db import get_db
 from app.api.dependencies.cache import get_redis
 from tests.api.conftest import register_and_login
+from tests.api.conftest import get_user_id
 
 # --- Хелперы ---
-
-async def get_user_id(client, token):
-    r = await client.get(
-        "/api/v1/users/me",
-        headers={"authorization": f"Bearer {token}"},
-    )
-    return r.json()["id"]
 
 
 async def create_job(client, token):
